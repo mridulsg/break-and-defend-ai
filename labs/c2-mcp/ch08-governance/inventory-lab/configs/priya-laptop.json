@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "sql-explorer": {
+      "url": "http://10.0.4.7:9000/mcp",
+      "headers": {
+        "Authorization": "Bearer lab-token-0000-fake"
+      }
+    }
+  }
+}

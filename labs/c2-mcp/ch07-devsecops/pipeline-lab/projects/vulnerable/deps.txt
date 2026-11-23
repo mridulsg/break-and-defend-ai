@@ -1,0 +1,4 @@
+mcp
+requests>=2.0
+fast-tokenizer-pro==0.4.1
+--extra-index-url https://packages.acme-internal.example/simple

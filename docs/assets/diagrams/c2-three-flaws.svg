@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 330" role="img" aria-labelledby="t d" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+  <title id="t">Three tools, three things that can go wrong with an argument</title>
+  <desc id="d">A caller, either the model or an attacker talking to the server directly, sends an argument. read_file pastes it into a path and reaches the whole disk. check_host pastes it into a shell command and runs commands. fetch_url opens the address from inside the network and reaches internal services.</desc>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+  </defs>
+  <rect width="760" height="330" rx="14" fill="#ffffff" stroke="#cbd5e1"/>
+  <g font-size="13" fill="#0f172a">
+    <rect x="14" y="14" width="150" height="224" rx="10" fill="#f1f5f9" stroke="#94a3b8"/>
+    <text x="89" y="40" text-anchor="middle" font-weight="700">The caller</text>
+    <text x="89" y="62" text-anchor="middle" font-size="12" fill="#334155">the model,</text>
+    <text x="89" y="78" text-anchor="middle" font-size="12" fill="#334155">or anyone who</text>
+    <text x="89" y="94" text-anchor="middle" font-size="12" fill="#334155">can reach the server</text>
+    <text x="89" y="130" text-anchor="middle" font-size="12" font-style="italic" fill="#64748b">writes the arguments</text>
+    <text x="89" y="190" text-anchor="middle" font-size="12" fill="#b91c1c" font-weight="700">The server must not</text>
+    <text x="89" y="206" text-anchor="middle" font-size="12" fill="#b91c1c" font-weight="700">trust either.</text>
+
+    <rect x="196" y="14" width="540" height="64" rx="8" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+    <text x="210" y="36" font-weight="700">read_file("../secrets/api-key.txt")</text>
+    <text x="210" y="56" font-size="12" fill="#334155">argument pasted into a path</text><text x="500" y="56" font-size="12" font-weight="700" fill="#b91c1c">reaches any file the server can read</text>
+    <rect x="196" y="90" width="540" height="64" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+    <text x="210" y="112" font-weight="700">check_host("x; cat /srv/secrets/db-password.txt")</text>
+    <text x="210" y="132" font-size="12" fill="#334155">argument pasted into a shell command</text><text x="500" y="132" font-size="12" font-weight="700" fill="#b91c1c">runs any command</text>
+    <rect x="196" y="166" width="540" height="64" rx="8" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+    <text x="210" y="188" font-weight="700">fetch_url("http://127.0.0.1:9200/credentials")</text>
+    <text x="210" y="208" font-size="12" fill="#334155">argument opened from inside the network</text><text x="500" y="208" font-size="12" font-weight="700" fill="#b91c1c">reaches what outsiders cannot</text>
+    <line x1="164" y1="46" x2="194" y2="46" stroke="#475569" stroke-width="2" marker-end="url(#a)"/>
+    <line x1="164" y1="122" x2="194" y2="122" stroke="#475569" stroke-width="2" marker-end="url(#a)"/>
+    <line x1="164" y1="198" x2="194" y2="198" stroke="#475569" stroke-width="2" marker-end="url(#a)"/>
+  </g>
+  <rect x="14" y="254" width="732" height="60" rx="10" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="380" y="278" text-anchor="middle" font-size="15" font-weight="700" fill="#0f172a">Not new, and not about AI: the oldest bugs in web security, with a new caller.</text>
+  <text x="380" y="298" text-anchor="middle" font-size="13" fill="#334155">The fix is also old: check the argument against what the tool is allowed to do, in the tool.</text>
+</svg>

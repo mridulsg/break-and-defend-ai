@@ -1,0 +1,37 @@
+# Model benchmark. Spends a few cents. Run from the repository root:
+#   docker compose --env-file .env -f shared/benchmarks/model-bench/compose.yaml up --build --abort-on-container-exit --exit-code-from toolbox
+name: bdai-c1-model-bench
+
+services:
+  toolbox:
+    build:
+      context: ../../toolbox/c1
+    image: bdai/toolbox-c1:local
+    command: ["python", "/lab/bench.py"]
+    environment:
+      OPENAI_BASE_URL: http://bdai-gateway:4000/v1
+      OPENAI_API_KEY: ${BDAI_GATEWAY_KEY:?Run shared/scripts/setup.sh first}
+      BDAI_GATEWAY_URL: http://bdai-gateway:4000
+      BENCH_REPS: ${BENCH_REPS:-3}
+      BENCH_TEMP: ${BENCH_TEMP:-}
+      BENCH_ALIASES: ${BENCH_ALIASES:-bench-haiku,bench-deepseek,bench-luna,bench-nano,bench-qwen,bench-mistral,bench-gptoss,bench-sonnet}
+    volumes:
+      - ./bench.py:/lab/bench.py:ro
+    networks:
+      - bdai-llm
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /home/lab
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 256m
+    cpus: 0.5
+    labels:
+      bdai.course: c1
+
+networks:
+  bdai-llm:
+    name: bdai-llm
+    external: true

@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Acme Support Console</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231b6b4a'/%3E%3Cpath d='M4 25 13 8l5 9 3-5 7 13z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/console.css">
+</head>
+<body data-view="chat">
+<div class="app">
+
+  <header class="topbar">
+    <div class="brand">
+      <svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#1b6b4a"/><path d="M4 25 13 8l5 9 3-5 7 13z" fill="#fff"/></svg>
+      <div>
+        <div class="brand-name" id="company">Acme Outdoor Gear</div>
+        <div class="brand-sub" id="product">TrailBot Support Console</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <span class="pill" id="lab-pill"></span>
+      <label class="fixes" id="fixes-wrap" hidden>
+        <input type="checkbox" id="fixes" aria-label="Apply the fixes">
+        <span class="switch" aria-hidden="true"></span>
+        <span>Fixes</span>
+      </label>
+      <label class="model-select">Model
+        <select id="model" aria-label="Model"></select>
+      </label>
+      <button class="pill pill-button" id="mission-pill" type="button" title="Open missions">Missions</button>
+      <span class="status" id="status" role="status"><i class="dot"></i><span id="status-text">Connecting</span></span>
+    </div>
+  </header>
+
+  <nav class="sidebar" aria-label="Sections">
+    <div id="nav"></div>
+    <div class="sidebar-foot">
+      <div class="note-lab">Lab instrument</div>
+      <p>The panel on the right shows what TrailBot saw and did. A real attacker could not see that. It is here so you can learn from it.</p>
+    </div>
+  </nav>
+
+  <main class="main">
+
+    <!-- Chat -->
+    <section class="view view-chat" id="view-chat" aria-label="Customer chat">
+      <div class="chat-col">
+        <div class="thread" id="thread" aria-live="polite">
+          <div class="empty" id="empty">
+            <div class="empty-icon">
+              <svg viewBox="0 0 32 32" width="40" height="40" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#e4f1ea"/><path d="M5 24 13 9l5 8 3-4 6 11z" fill="#1b6b4a"/></svg>
+            </div>
+            <h2>Chat with TrailBot</h2>
+            <p id="empty-text"></p>
+            <div class="chips" id="suggestions"></div>
+          </div>
+        </div>
+        <form class="composer" id="composer" autocomplete="off">
+          <textarea id="question" rows="1" maxlength="2000" placeholder="Message TrailBot" aria-label="Message TrailBot"></textarea>
+          <button class="btn btn-primary" id="send" type="submit">Send</button>
+        </form>
+        <div class="composer-note">TrailBot answers every question on its own and does not remember earlier messages. Enter sends, Shift+Enter adds a line.</div>
+      </div>
+
+      <aside class="inspector" id="inspector" aria-label="Behind the scenes">
+        <div class="insp-head">
+          <h2>Behind the scenes</h2>
+          <span class="insp-sub" id="insp-sub">Select a reply</span>
+        </div>
+        <div class="tabs" role="tablist" id="tabs">
+          <button role="tab" class="tab is-active" data-tab="prompt" type="button">What TrailBot saw</button>
+          <button role="tab" class="tab" data-tab="actions" type="button" hidden>What it did</button>
+          <button role="tab" class="tab" data-tab="retrieved" type="button">Sources used</button>
+          <button role="tab" class="tab" data-tab="monitor" type="button">Monitor</button>
+        </div>
+        <div class="insp-body" id="insp-body"></div>
+      </aside>
+    </section>
+
+    <!-- Feedback and content -->
+    <section class="view view-feedback" id="view-feedback" aria-label="Feedback and content">
+      <div class="page">
+        <h1>Feedback and content</h1>
+        <p class="lede" id="fb-lede"></p>
+
+        <div class="card">
+          <h2>Submit feedback</h2>
+          <form id="note-form" autocomplete="off">
+            <label class="field-label" for="note-text">Your text</label>
+            <textarea id="note-text" rows="7" maxlength="2000" placeholder="Write what the website visitor would submit"></textarea>
+            <fieldset class="doors" id="doors">
+              <legend class="field-label">Where does this text appear?</legend>
+            </fieldset>
+            <div class="row">
+              <button class="btn btn-primary" id="note-submit" type="submit">Submit</button>
+              <span class="hint" id="note-count"></span>
+            </div>
+            <div class="form-msg" id="note-msg" role="alert"></div>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>Your submissions</h2><button class="btn btn-quiet" id="notes-clear" type="button">Remove all</button></div>
+          <div id="notes-list" class="notes-list"></div>
+        </div>
+
+        <div class="card">
+          <h2>What TrailBot can read</h2>
+          <div class="kb" id="kb"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Orders and refunds -->
+    <section class="view view-orders" id="view-orders" aria-label="Orders and refunds">
+      <div class="page">
+        <h1>Orders and refunds</h1>
+        <p class="lede">Acme's order system, as TrailBot's tools see it. You are chatting as <b id="who"></b>.</p>
+        <div class="card"><h2>Orders</h2><div class="table-wrap"><table class="tbl" id="orders-table"></table></div></div>
+        <div class="card">
+          <div class="card-head"><h2>Refunds</h2><button class="btn btn-quiet" id="refunds-clear" type="button">Clear refunds</button></div>
+          <div id="refunds-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Website preview -->
+    <section class="view view-preview" id="view-preview" aria-label="Website preview">
+      <div class="page">
+        <h1>Website preview</h1>
+        <p class="lede">This is how Acme's website shows TrailBot's replies to its visitors. It was written years before TrailBot, and it builds the page from the reply's text exactly as it arrives.</p>
+        <div class="card preview-card">
+          <iframe id="widget" title="Acme website chat widget" sandbox="allow-scripts allow-same-origin"></iframe>
+        </div>
+      </div>
+    </section>
+
+    <!-- Review moderator -->
+    <section class="view view-moderator" id="view-moderator" aria-label="Review moderator">
+      <div class="page">
+        <h1>Review moderator</h1>
+        <p class="lede">Acme's website uses a small model to catch scam reviews. It learned from <span id="mod-clean"></span> labelled reviews, and customers can flag reviews, which adds them as training examples. Add yours (up to <span id="mod-max"></span>) and the model retrains straight away.</p>
+
+        <div class="card">
+          <h2>What the model does now</h2>
+          <dl class="kv" id="mod-report"></dl>
+        </div>
+
+        <div class="card">
+          <h2>Add a training example</h2>
+          <form id="mod-form" autocomplete="off">
+            <label class="field-label" for="mod-text">Review text</label>
+            <textarea id="mod-text" rows="3" maxlength="300" placeholder="Write a review, as a customer would flag it"></textarea>
+            <label class="field-label" for="mod-label">Label it as</label>
+            <select id="mod-label" class="select"><option value="genuine">genuine</option><option value="scam">scam</option></select>
+            <div class="row"><button class="btn btn-primary" id="mod-add" type="submit">Add example</button><span class="hint" id="mod-count"></span></div>
+            <div class="form-msg" id="mod-msg" role="alert"></div>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>Your examples</h2><button class="btn btn-quiet" id="mod-clear" type="button">Remove all</button></div>
+          <div id="mod-list" class="notes-list"></div>
+        </div>
+
+        <div class="card">
+          <h2>Test a review</h2>
+          <form id="mod-test-form" autocomplete="off">
+            <textarea id="mod-test-text" rows="2" maxlength="300" aria-label="Review to test"></textarea>
+            <div class="row"><button class="btn btn-primary" type="submit">Test</button><button class="btn btn-quiet" id="mod-use-probe" type="button">Use the scam probe</button><span id="mod-test-result"></span></div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reply autocomplete -->
+    <section class="view view-autocomplete" id="view-autocomplete" aria-label="Reply autocomplete">
+      <div class="page">
+        <h1>Reply autocomplete</h1>
+        <p class="lede">When a support agent starts a sentence, this small language model finishes it. It was trained on Acme's past support chats, exactly as they were saved.</p>
+        <div class="card">
+          <h2>Finish the sentence</h2>
+          <form id="auto-form" autocomplete="off">
+            <label class="field-label" for="auto-prefix">Start a sentence</label>
+            <input id="auto-prefix" type="text" maxlength="200" placeholder="Hi, where is my" spellcheck="false">
+            <label class="field-label" for="auto-creativity">Creativity: <span id="auto-creativity-val">0</span> (0 always picks the most common next word)</label>
+            <input id="auto-creativity" type="range" min="0" max="1" step="0.1" value="0">
+            <div class="row"><button class="btn btn-primary" type="submit">Complete</button></div>
+            <div class="form-msg" id="auto-msg" role="alert"></div>
+          </form>
+          <div class="auto-out" id="auto-out" hidden></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Receipt upload -->
+    <section class="view view-receipt" id="view-receipt" aria-label="Receipt upload">
+      <div class="page">
+        <h1>Receipt upload</h1>
+        <p class="lede">To start a return, a customer uploads a photo of their receipt, and Acme's reader tells them how to proceed. Here you make the photo. The receipt below is drawn in your browser: add your own text to it, choose how visible it is, and upload it.</p>
+
+        <div class="card">
+          <h2>Your receipt image</h2>
+          <canvas id="receipt-canvas" width="560" height="300" aria-label="The receipt image that will be uploaded"></canvas>
+          <label class="field-label" for="extra-text">Add text to the image</label>
+          <textarea id="extra-text" rows="3" maxlength="400" placeholder="Anything you type is drawn onto the receipt"></textarea>
+          <div class="row"><button class="btn btn-quiet" id="extra-example" type="button">Fill in an example</button><span class="hint">Then drag How visible down: at 100% the text is plain black, at 0% it is the colour of the paper.</span></div>
+          <div class="controls">
+            <label>Where
+              <select id="extra-where" class="select-inline"><option value="bottom">Bottom margin</option><option value="middle">Across the middle</option><option value="top">Behind the heading</option></select>
+            </label>
+            <label>Size <span id="extra-size-val">14</span>
+              <input id="extra-size" type="range" min="10" max="26" step="1" value="14">
+            </label>
+            <label>How visible <span id="extra-vis-val">100</span>%
+              <input id="extra-vis" type="range" min="0" max="100" step="1" value="100">
+            </label>
+          </div>
+          <div class="row"><button class="btn btn-primary" id="receipt-submit" type="button">Upload this receipt</button><span class="hint" id="receipt-hint"></span></div>
+          <div class="form-msg" id="receipt-msg" role="alert"></div>
+        </div>
+
+        <div class="card" id="receipt-result" hidden>
+          <h2>What happened</h2>
+          <div class="section-title">What the reader found in the image</div>
+          <pre class="result-pre" id="res-ocr"></pre>
+          <div class="section-title">Text a person could not read</div>
+          <div id="res-hidden"></div>
+          <div class="section-title">What the model was given</div>
+          <pre class="result-pre" id="res-sent"></pre>
+          <div class="section-title">Reply to the customer</div>
+          <div class="reply-box" id="res-reply"></div>
+          <div id="res-alerts"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dev assistant -->
+    <section class="view view-dev" id="view-dev" aria-label="Dev assistant">
+      <div class="page">
+        <h1>Dev assistant</h1>
+        <p class="lede">Acme's engineers ask this coding helper which Python package to use. It answers with a <code>pip install</code> line, and engineers often paste it straight into a terminal.</p>
+        <div class="card">
+          <h2>Ask for a package</h2>
+          <form id="dev-form" autocomplete="off">
+            <label class="field-label" for="dev-q">What do you need?</label>
+            <input id="dev-q" type="text" maxlength="300" placeholder="I need a Python package to parse GPX files" spellcheck="false">
+            <div class="row"><button class="btn btn-primary" id="dev-go" type="submit">Ask</button><span class="hint" id="dev-hint"></span></div>
+            <div class="form-msg" id="dev-msg" role="alert"></div>
+          </form>
+          <div id="dev-out" hidden>
+            <div class="section-title">What the assistant said</div>
+            <div class="reply-box" id="dev-reply"></div>
+            <div class="section-title">Packages it told the engineer to install</div>
+            <div id="dev-pkgs"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Red team harness -->
+    <section class="view view-redteam" id="view-redteam" aria-label="Red team">
+      <div class="page">
+        <h1>Red team</h1>
+        <p class="lede">The harness sends a library of attacks to TrailBot, reads every reply with a detector, and counts how many worked. It also sends normal questions, to see what the guardrail costs real customers.</p>
+
+        <div class="card">
+          <h2>Run the attack library</h2>
+          <div class="controls">
+            <label>Guardrail <select id="rt-config" class="select-inline"></select></label>
+            <label>Times per attack <select id="rt-n" class="select-inline"><option>1</option><option>2</option><option>3</option></select></label>
+          </div>
+          <p class="hint" id="rt-desc"></p>
+          <ul class="rules" id="rt-rules"></ul>
+          <div class="row"><button class="btn btn-primary" id="rt-run" type="button">Run</button><span class="hint" id="rt-hint"></span></div>
+          <div class="bar-wide" id="rt-progress" hidden><i></i></div>
+          <div class="form-msg" id="rt-msg" role="alert"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>Scoreboard</h2><button class="btn btn-quiet" id="rt-clear" type="button">Clear results</button></div>
+          <p class="hint">Attacks that worked: lower is better. Normal questions answered correctly: higher is better.</p>
+          <div id="rt-board"></div>
+        </div>
+
+        <div class="card">
+          <h2>Which attacks worked</h2>
+          <div class="table-wrap"><table class="tbl" id="rt-table"></table></div>
+        </div>
+
+        <div class="card">
+          <h2>Prompts and replies</h2>
+          <div class="controls"><label>Show replies for <select id="rt-view" class="select-inline"></select></label></div>
+          <p class="hint">Open an attack to see exactly what was sent, what counts as the attack working, and what TrailBot said on every try with the guardrail you chose here.</p>
+          <ul class="rules" id="rt-view-rules"></ul>
+          <div id="rt-detail"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Your own attack -->
+    <section class="view view-probe" id="view-probe" aria-label="Your own attack">
+      <div class="page">
+        <h1>Your own attack</h1>
+        <p class="lede">The library only knows the attacks someone wrote down. Write your own, send it through a guardrail, and see whether the secret escalation code comes out.</p>
+        <div class="card">
+          <form id="probe-form" autocomplete="off">
+            <label class="field-label" for="probe-config">Guardrail</label>
+            <select id="probe-config" class="select"></select>
+            <ul class="rules" id="probe-rules"></ul>
+            <label class="field-label" for="probe-text">Your message to TrailBot</label>
+            <textarea id="probe-text" rows="4" maxlength="600" placeholder="Write an attack"></textarea>
+            <div class="row"><button class="btn btn-primary" id="probe-go" type="submit">Send</button><span class="hint" id="probe-hint"></span></div>
+            <div class="form-msg" id="probe-msg" role="alert"></div>
+          </form>
+          <div id="probe-out" hidden>
+            <div class="section-title">What the guardrail did</div>
+            <div id="probe-verdict"></div>
+            <div class="section-title">What the customer saw</div>
+            <div class="reply-box" id="probe-reply"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Model files (Chapter 9) -->
+    <section class="view view-models" id="view-models" aria-label="Model files">
+      <div class="page">
+        <h1>Model files</h1>
+        <p class="lede">A colleague wants to switch to a model they found on a public hub. Before anyone loads a model file, read it. <b>Read the steps</b> prints the file's instructions without running them. <b>Load</b> runs the loader.</p>
+        <div id="model-list"></div>
+        <div class="card" id="model-out" hidden>
+          <h2 id="model-out-title"></h2>
+          <div id="model-out-body"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dependency audit (Chapter 9) -->
+    <section class="view view-deps" id="view-deps" aria-label="Dependency audit">
+      <div class="page">
+        <h1>Dependency audit</h1>
+        <p class="lede">This is the list of packages Acme's sentiment service installs. Every package runs code on a machine, at install time and again when it is imported. The audit lists what a reviewer would stop.</p>
+        <div class="card">
+          <h2>The file</h2>
+          <pre class="codebox" id="deps-text"></pre>
+          <div class="row"><button class="btn btn-primary" id="deps-go" type="button">Audit</button><span class="hint" id="deps-hint"></span></div>
+          <div class="form-msg" id="deps-msg" role="alert"></div>
+        </div>
+        <div class="card" id="deps-out" hidden>
+          <h2>Findings</h2>
+          <div id="deps-counts"></div>
+          <div class="table-wrap"><table class="tbl" id="deps-table"></table></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Risk register (Chapter 11) -->
+    <section class="view view-register" id="view-register" aria-label="Risk register">
+      <div class="page">
+        <h1>Risk register</h1>
+        <p class="lede">This is your report. One row for each finding you proved: how serious it is, what the fix is, and who owns it. It opens when all three findings are confirmed.</p>
+        <div class="card" id="reg-locked">
+          <h2>Not open yet</h2>
+          <p class="hint">Confirm the three findings first (see Missions). A report records what you proved, not what you guess.</p>
+        </div>
+        <div class="card" id="reg-card" hidden>
+          <h2>Findings</h2>
+          <form id="reg-form" autocomplete="off">
+            <div id="reg-rows"></div>
+            <div class="row"><button class="btn btn-primary" id="reg-save" type="submit">Save the register</button><span class="hint" id="reg-hint"></span></div>
+            <div class="form-msg" id="reg-msg" role="alert"></div>
+          </form>
+        </div>
+        <div class="card" id="reg-ref" hidden>
+          <h2>Compare with ours</h2>
+          <p class="hint">There is no single right answer. Check you named the same place for each fix, and that the owner is a person or a team that can change it.</p>
+          <div class="table-wrap"><table class="tbl" id="reg-ref-table"></table></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Publish a server (Course 2, Chapter 2) -->
+    <section class="view view-publish" id="view-publish" aria-label="Publish a server">
+      <div class="page">
+        <h1>Publish a server</h1>
+        <p class="lede">You are the author of <b>docs-helper</b>, a community MCP server with one tool, <code>format_changelog</code>. The only thing you control is the text the model reads about that tool: its description.</p>
+        <div class="card">
+          <h2>The description</h2>
+          <form id="pub-form" autocomplete="off">
+            <label class="field-label" for="pub-v1">Version 1: what the engineer reviews and approves</label>
+            <textarea id="pub-v1" rows="4" maxlength="1500" spellcheck="false"></textarea>
+            <label class="field-label" for="pub-v2">Version 2: what the server says after an update (optional, for a rug pull)</label>
+            <textarea id="pub-v2" rows="4" maxlength="1500" spellcheck="false"></textarea>
+            <div class="row">
+              <button class="btn btn-primary" id="pub-save" type="submit">Save and publish version 1</button>
+              <button class="btn btn-quiet" id="pub-approve" type="button">Engineer approves the server</button>
+              <button class="btn btn-quiet" id="pub-update" type="button">Push the update (version 2)</button>
+              <button class="btn btn-quiet" id="pub-reset" type="button">Reset</button>
+            </div>
+            <div class="form-msg" id="pub-msg" role="alert"></div>
+          </form>
+        </div>
+        <div class="card">
+          <h2>State</h2>
+          <div id="pub-chips"></div>
+          <div class="section-title">Published right now (what the model reads)</div>
+          <pre class="codebox" id="pub-current"></pre>
+          <div class="section-title">What the engineer approved</div>
+          <pre class="codebox" id="pub-approved"></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gateway (Course 2, Chapter 6) -->
+    <section class="view view-gateway" id="view-gateway" aria-label="Gateway">
+      <div class="page">
+        <h1>Gateway</h1>
+        <p class="lede">Every <code>tools/list</code> and <code>tools/call</code> passes through this gateway. Switch controls on, then run the suite: five attacks that should be stopped, and three pieces of real work that should still succeed.</p>
+        <div class="card">
+          <h2>Controls</h2>
+          <div id="gw-controls"></div>
+          <div class="row"><button class="btn btn-primary" id="gw-run" type="button">Save and run the suite</button><span class="hint" id="gw-hint"></span></div>
+          <div class="form-msg" id="gw-msg" role="alert"></div>
+        </div>
+        <div class="card" id="gw-out" hidden>
+          <h2 id="gw-score"></h2>
+          <div class="table-wrap"><table class="tbl" id="gw-table"></table></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pipeline (Course 2, Chapter 7) -->
+    <section class="view view-pipeline" id="view-pipeline" aria-label="Pipeline">
+      <div class="page">
+        <h1>Pipeline</h1>
+        <p class="lede">A team wants to ship an MCP server. The pipeline reads the project's files and a gate decides whether the build may go on. Nothing in the project is ever run.</p>
+        <div class="card">
+          <h2>Run the pipeline</h2>
+          <div class="controls">
+            <label>Project <select id="pl-name" class="select-inline"><option value="vulnerable">vulnerable</option><option value="fixed">fixed</option></select></label>
+            <label>Fail the build at <select id="pl-threshold" class="select-inline"><option value="high">high</option><option value="medium" selected>medium</option><option value="low">low</option></select></label>
+          </div>
+          <div class="row"><button class="btn btn-primary" id="pl-run" type="button">Run</button><button class="btn btn-quiet" id="pl-view" type="button">Show the files</button></div>
+          <div class="form-msg" id="pl-msg" role="alert"></div>
+        </div>
+        <div class="card" id="pl-out" hidden>
+          <h2 id="pl-verdict"></h2>
+          <div class="table-wrap"><table class="tbl" id="pl-table"></table></div>
+        </div>
+        <div class="card" id="pl-files" hidden></div>
+      </div>
+    </section>
+
+    <!-- Inventory (Course 2, Chapter 8) -->
+    <section class="view view-inventory" id="view-inventory" aria-label="Inventory">
+      <div class="page">
+        <h1>Inventory</h1>
+        <p class="lede">Every engineer's assistant has a config file that names the MCP servers it connects to. Scan them, compare with the approved registry, and decide about each server that is not approved.</p>
+        <div class="card">
+          <div class="row"><button class="btn btn-primary" id="inv-run" type="button">Scan every config</button><span class="hint" id="inv-hint"></span></div>
+          <div class="form-msg" id="inv-msg" role="alert"></div>
+        </div>
+        <div class="card" id="inv-out" hidden>
+          <h2 id="inv-title"></h2>
+          <div class="table-wrap"><table class="tbl" id="inv-table"></table></div>
+        </div>
+        <div class="card" id="inv-decide" hidden>
+          <h2 id="inv-decide-title"></h2>
+          <div class="controls">
+            <label>Server <select id="inv-key" class="select-inline"></select></label>
+            <label>Decision <select id="inv-action" class="select-inline"><option>approve</option><option>block</option><option>request-fix</option><option>investigate</option></select></label>
+          </div>
+          <input id="inv-owner" type="text" maxlength="60" placeholder="Owner: a named person or team">
+          <textarea id="inv-reason" rows="2" maxlength="200" placeholder="Reason, in a sentence"></textarea>
+          <div class="row"><button class="btn btn-primary" id="inv-save" type="button">Record the decision</button></div>
+          <div class="form-msg" id="inv-dmsg" role="alert"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MCP servers (Course 2) -->
+    <section class="view view-servers" id="view-servers" aria-label="MCP servers">
+      <div class="page">
+        <h1>MCP servers</h1>
+        <p class="lede">These are the servers the assistant is connected to. Each one answers <code>server/discover</code> and <code>tools/list</code>. What you read here, name and description of every tool, is exactly what the model reads.</p>
+        <div id="srv-list"></div>
+      </div>
+    </section>
+
+    <!-- MCP tool tester (Course 2) -->
+    <section class="view view-tester" id="view-tester" aria-label="Tool tester">
+      <div class="page">
+        <h1>Tool tester</h1>
+        <p class="lede">Send a request to a server yourself, the way the assistant's host does, and read the raw request and response. Choose a server and a method.</p>
+        <div class="card">
+          <h2>Send a request</h2>
+          <form id="tt-form" autocomplete="off">
+            <div class="controls">
+              <label>Server <select id="tt-server" class="select-inline"></select></label>
+              <label>Method <select id="tt-method" class="select-inline"><option>server/discover</option><option>tools/list</option><option>tools/call</option></select></label>
+              <label>Break it <select id="tt-break" class="select-inline"><option value="">Send it correctly</option><option value="version">Wrong MCP-Protocol-Version header</option><option value="method">Wrong Mcp-Method header</option><option value="origin">Add a foreign Origin header</option></select></label>
+            </div>
+            <div id="tt-token-row" hidden>
+              <label class="field-label" for="tt-token">Bearer token (sent as the Authorization header)</label>
+              <input id="tt-token" type="text" maxlength="2000" spellcheck="false" placeholder="paste a token, or mint one below">
+              <div class="controls">
+                <label>Audience <select id="mint-aud" class="select-inline"></select></label>
+                <label>Scopes <input id="mint-scope" type="text" maxlength="80" value="tickets:read" spellcheck="false"></label>
+                <button class="btn btn-quiet" id="mint-go" type="button">Mint a token for Sam</button>
+              </div>
+            </div>
+            <label class="field-label" for="tt-name">Tool name (for tools/call)</label>
+            <input id="tt-name" type="text" maxlength="80" spellcheck="false" placeholder="read_note">
+            <label class="field-label" for="tt-args">Arguments as JSON (for tools/call)</label>
+            <textarea id="tt-args" rows="3" maxlength="2000" spellcheck="false" placeholder='{"id": "onboarding"}'></textarea>
+            <div class="row"><button class="btn btn-primary" id="tt-go" type="submit">Send</button><span class="hint" id="tt-hint"></span></div>
+            <div class="form-msg" id="tt-msg" role="alert"></div>
+          </form>
+        </div>
+        <div class="card" id="tt-out" hidden>
+          <h2>What was sent and what came back</h2>
+          <div id="tt-status"></div>
+          <div class="section-title">Request</div>
+          <pre class="codebox" id="tt-req"></pre>
+          <div class="section-title">Response</div>
+          <pre class="codebox" id="tt-res"></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Missions -->
+    <section class="view view-missions" id="view-missions" aria-label="Missions">
+      <div class="page">
+        <h1>Missions</h1>
+        <p class="lede" id="missions-lede"></p>
+        <div id="missions-list"></div>
+        <div class="card flag" id="flag-card" hidden>
+          <h2>All missions complete</h2>
+          <p>Your flag:</p>
+          <div class="flag-box"><code id="flag-text"></code><button class="btn btn-quiet" id="flag-copy" type="button">Copy</button></div>
+          <p class="hint" id="flag-next"></p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+<script src="/console.js"></script>
+</body>
+</html>

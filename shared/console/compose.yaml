@@ -1,0 +1,41 @@
+# The console edge: the one container that publishes a port so your browser can reach a lab console.
+# Lab containers stay on the internal bdai-llm network (no internet). This container joins that network and a
+# second, ordinary one, and forwards http://127.0.0.1:8300 to the lab console, nothing else.
+# Start a lab console with:  ./shared/scripts/console-up.sh <lab compose file>
+name: bdai-console-edge
+
+services:
+  edge:
+    container_name: bdai-console-edge
+    image: bdai/gateway:local          # any image with Python works; this one is always built by setup
+    command: ["python", "/console/forward.py"]
+    environment:
+      TARGET_HOST: bdai-console
+      TARGET_PORT: "8080"
+      LISTEN_PORTS: "8080,8081"
+    volumes:
+      - ./forward.py:/console/forward.py:ro
+    ports:
+      - "127.0.0.1:8300:8080"   # the console
+      - "127.0.0.1:8301:8081"   # the unsafe preview page, on its own origin (Chapter 4)
+    networks:
+      - bdai-llm
+      - bdai-ui
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 64m
+    cpus: 0.25
+    restart: unless-stopped
+    labels:
+      bdai.component: console-edge
+
+networks:
+  bdai-llm:
+    name: bdai-llm
+    external: true
+  bdai-ui:
+    name: bdai-ui

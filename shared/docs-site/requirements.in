@@ -1,0 +1,2 @@
+# Direct dependency of the docs site image. requirements.txt is generated with hashes.
+mkdocs-material

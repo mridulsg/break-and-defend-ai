@@ -1,0 +1,5 @@
+# Direct dependencies only. requirements.txt is generated from this file with
+# hashes (pip-compile --generate-hashes) and installed with --require-hashes.
+starlette
+uvicorn
+httpx

@@ -1,0 +1,86 @@
+# Course 2, Course 3, Chapter 3 labs (Labs 3.1 and 3.2): memory poisoning. Run from the repository root. See README.md.
+# Start the web console with:  ./shared/scripts/console-up.sh labs/c3-agents/ch03-memory-poisoning/memory-lab/compose.yaml
+name: bdai-c3-ch03-memory
+
+services:
+  app:
+    build:
+      context: ../../../../shared/toolbox/c3
+    image: bdai/toolbox-c3:local
+    working_dir: /lab
+    command: ["bash"]
+    stdin_open: true
+    tty: true
+    environment:
+      OPENAI_BASE_URL: http://bdai-gateway:4000/v1
+      OPENAI_API_KEY: ${BDAI_GATEWAY_KEY:?Run shared/scripts/setup.sh first}
+      BDAI_LAB: c3-ch03-memory
+      PYTHONPATH: /lab/app:/mcp:/agents
+    volumes:
+      - ./app:/lab/app:ro
+      - ../../../../shared/mcp:/mcp:ro
+      - ../../../../shared/agents:/agents:ro
+      - ch03-memory-data:/data
+    networks:
+      - bdai-llm
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /home/lab
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 512m
+    cpus: 1
+    labels:
+      bdai.course: c3
+
+  console:
+    build:
+      context: ../../../../shared/toolbox/c3
+    image: bdai/toolbox-c3:local
+    container_name: bdai-console
+    working_dir: /lab
+    command: ["python", "/lab/app/console.py"]
+    environment:
+      OPENAI_BASE_URL: http://bdai-gateway:4000/v1
+      OPENAI_API_KEY: ${BDAI_GATEWAY_KEY:?Run shared/scripts/setup.sh first}
+      BDAI_LAB: c3-ch03-memory
+      BDAI_CONSOLE_DIR: /console
+      PYTHONPATH: /lab/app:/mcp:/agents
+    volumes:
+      - ./app:/lab/app:ro
+      - ../../../../shared/console:/console:ro
+      - ../../../../shared/mcp:/mcp:ro
+      - ../../../../shared/agents:/agents:ro
+      - ch03-memory-data:/data
+    networks:
+      - bdai-llm
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /home/lab
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 512m
+    cpus: 1
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request as u; u.urlopen('http://127.0.0.1:8080/healthz', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    labels:
+      bdai.course: c3
+
+networks:
+  bdai-llm:
+    name: bdai-llm
+    external: true
+
+volumes:
+  ch03-memory-data:
+    name: bdai-c3-ch03-memory-data
+    labels:
+      bdai.course: c3

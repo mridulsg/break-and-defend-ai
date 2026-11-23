@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 250" role="img" aria-labelledby="t d" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+  <title id="t">Three locks on the data</title>
+  <desc id="d">Lock one: TrailBot reads only the staff handbook. Lock two: new training examples are checked against trusted data before the model learns from them. Lock three: private details are removed before a model is trained.</desc>
+  <rect width="760" height="250" rx="14" fill="#ffffff" stroke="#cbd5e1"/>
+  <g font-size="13" fill="#0f172a">
+    <rect x="14" y="14" width="236" height="150" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+    <circle cx="34" cy="34" r="13" fill="#16a34a"/><text x="34" y="39" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">1</text>
+    <text x="56" y="39" font-weight="700" font-size="15">Trusted sources only</text>
+    <text x="28" y="76" fill="#334155">TrailBot searches the staff</text>
+    <text x="28" y="94" fill="#334155">handbook and nothing else.</text>
+    <text x="28" y="128" font-weight="700" fill="#166534">Poisoned notes never</text>
+    <text x="28" y="146" font-weight="700" fill="#166534">get read.</text>
+
+    <rect x="262" y="14" width="236" height="150" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+    <circle cx="282" cy="34" r="13" fill="#16a34a"/><text x="282" y="39" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">2</text>
+    <text x="304" y="39" font-weight="700" font-size="15">Check before learning</text>
+    <text x="276" y="76" fill="#334155">A model trained on trusted</text>
+    <text x="276" y="94" fill="#334155">data judges each new example.</text>
+    <text x="276" y="128" font-weight="700" fill="#166534">Examples it disagrees</text>
+    <text x="276" y="146" font-weight="700" fill="#166534">with are dropped.</text>
+
+    <rect x="510" y="14" width="236" height="150" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+    <circle cx="530" cy="34" r="13" fill="#16a34a"/><text x="530" y="39" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">3</text>
+    <text x="552" y="39" font-weight="700" font-size="15">Scrub before training</text>
+    <text x="524" y="76" fill="#334155">Phone numbers, emails and</text>
+    <text x="524" y="94" fill="#334155">addresses are removed first.</text>
+    <text x="524" y="128" font-weight="700" fill="#166534">Nothing private left</text>
+    <text x="524" y="146" font-weight="700" fill="#166534">to leak.</text>
+  </g>
+  <rect x="14" y="182" width="732" height="54" rx="10" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="380" y="206" text-anchor="middle" font-size="15" font-weight="700" fill="#0f172a">All three work on the data, before the model ever sees it.</text>
+  <text x="380" y="225" text-anchor="middle" font-size="13" fill="#334155">A model cannot be asked to forget or to doubt what it learned.</text>
+</svg>

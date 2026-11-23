@@ -1,0 +1,82 @@
+# Chapter 9 lab (Labs 9.1 and 9.2): the AI supply chain. Run from the repository root. See README.md.
+# Start the web console with:  ./shared/scripts/console-up.sh labs/c1-llm/ch09-ai-supply-chain/supply-lab/compose.yaml
+name: bdai-c1-ch09-supply
+
+services:
+  app:
+    build:
+      context: ../../../../shared/toolbox/c1
+    image: bdai/toolbox-c1:local
+    working_dir: /lab
+    command: ["bash"]
+    stdin_open: true
+    tty: true
+    environment:
+      BDAI_LAB: c1-ch09-supply
+      PYTHONPATH: /lab/app
+    volumes:
+      - ./app:/lab/app:ro
+      - ./models:/lab/models:ro
+      - ./data:/lab/data:ro
+      - supply-lab-data:/data
+    networks:
+      - bdai-llm
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /home/lab
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 512m
+    cpus: 1
+    labels:
+      bdai.course: c1
+
+  console:
+    build:
+      context: ../../../../shared/toolbox/c1
+    image: bdai/toolbox-c1:local
+    container_name: bdai-console
+    working_dir: /lab
+    command: ["python", "/lab/app/console.py"]
+    environment:
+      BDAI_LAB: c1-ch09-supply
+      BDAI_CONSOLE_DIR: /console
+      PYTHONPATH: /lab/app
+    volumes:
+      - ./app:/lab/app:ro
+      - ./models:/lab/models:ro
+      - ./data:/lab/data:ro
+      - ../../../../shared/console:/console:ro
+      - supply-lab-data:/data
+    networks:
+      - bdai-llm
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /home/lab
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 512m
+    cpus: 1
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request as u; u.urlopen('http://127.0.0.1:8080/healthz', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    labels:
+      bdai.course: c1
+
+networks:
+  bdai-llm:
+    name: bdai-llm
+    external: true
+
+volumes:
+  supply-lab-data:
+    name: bdai-c1-ch09-supply-data
+    labels:
+      bdai.course: c1

@@ -1,0 +1,5 @@
+# The three real pickle scanners used in Lab 9.3. requirements.txt is generated with hashes:
+#   pip-compile --generate-hashes --allow-unsafe --strip-extras --no-header -o requirements.txt requirements.in
+picklescan==1.0.5
+fickling==0.1.13
+modelscan==0.8.8

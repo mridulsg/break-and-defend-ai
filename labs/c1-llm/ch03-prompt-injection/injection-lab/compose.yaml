@@ -1,0 +1,92 @@
+# Labs 3.1 and 3.2: break TrailBot with prompt injection, then defend it.
+# Run from the repository root. See README.md next to this file.
+name: bdai-c1-ch03-injection
+
+services:
+  app:
+    build:
+      context: ../../../../shared/toolbox/c1
+    image: bdai/toolbox-c1:local
+    working_dir: /lab
+    command: ["bash"]
+    stdin_open: true
+    tty: true
+    environment:
+      OPENAI_BASE_URL: http://bdai-gateway:4000/v1
+      OPENAI_API_KEY: ${BDAI_GATEWAY_KEY:?Run shared/scripts/setup.sh first}
+      BDAI_LAB: c1-ch03-injection
+      PYTHONPATH: /lab/app
+    volumes:
+      - ./app:/lab/app:ro
+      - ./defences:/lab/defences:ro
+      - ./corpus:/lab/corpus:ro
+      - ./inbox:/lab/inbox:ro
+      - ./web:/lab/web:ro
+      - injection-data:/data
+    networks:
+      - bdai-llm
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /home/lab
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 512m
+    cpus: 1
+    labels:
+      bdai.course: c1
+
+  # The web console: a chat window on TrailBot. Reached through the shared console edge at http://127.0.0.1:8300
+  # Start it with ./shared/scripts/console-up.sh <this file>
+  console:
+    build:
+      context: ../../../../shared/toolbox/c1
+    image: bdai/toolbox-c1:local
+    container_name: bdai-console
+    working_dir: /lab
+    command: ["python", "/lab/app/console.py"]
+    environment:
+      OPENAI_BASE_URL: http://bdai-gateway:4000/v1
+      OPENAI_API_KEY: ${BDAI_GATEWAY_KEY:?Run shared/scripts/setup.sh first}
+      BDAI_LAB: c1-ch03-injection
+      BDAI_CONSOLE_DIR: /console
+      PYTHONPATH: /lab/app
+    volumes:
+      - ./app:/lab/app:ro
+      - ./defences:/lab/defences:ro
+      - ./corpus:/lab/corpus:ro
+      - ./inbox:/lab/inbox:ro
+      - ./web:/lab/web:ro
+      - ../../../../shared/console:/console:ro
+      - injection-data:/data
+    networks:
+      - bdai-llm
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /home/lab
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 512m
+    cpus: 1
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request as u; u.urlopen('http://127.0.0.1:8080/healthz', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    labels:
+      bdai.course: c1
+
+networks:
+  bdai-llm:
+    name: bdai-llm
+    external: true
+
+volumes:
+  injection-data:
+    name: bdai-c1-ch03-injection-data
+    labels:
+      bdai.course: c1

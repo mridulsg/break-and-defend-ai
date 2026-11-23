@@ -1,0 +1,1 @@
+{"openai": {"OpenAICompatible": {"uri": "http://bdai-gateway:4000/v1", "max_tokens": 120, "temperature": 0.7, "suppressed_params": ["n"]}}}

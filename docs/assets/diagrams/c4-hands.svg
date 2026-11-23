@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 300" role="img" aria-labelledby="t d" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+  <title id="t">TrailBot with tools</title>
+  <desc id="d">Sam asks TrailBot to check order A-1001. TrailBot calls the lookup_order tool in Acme's order system, gets the order record back, and tells Sam it was delivered.</desc>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+  </defs>
+  <rect width="760" height="300" rx="14" fill="#ffffff" stroke="#cbd5e1"/>
+
+  <rect x="24" y="90" width="150" height="120" rx="12" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text x="99" y="124" text-anchor="middle" font-size="16" font-weight="700" fill="#0f172a">Sam</text>
+  <text x="99" y="146" text-anchor="middle" font-size="13" fill="#334155">a customer</text>
+  <text x="99" y="180" text-anchor="middle" font-size="12" fill="#334155" font-style="italic">"Can you check</text>
+  <text x="99" y="196" text-anchor="middle" font-size="12" fill="#334155" font-style="italic">order A-1001?"</text>
+
+  <rect x="300" y="90" width="150" height="120" rx="12" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+  <text x="375" y="124" text-anchor="middle" font-size="16" font-weight="700" fill="#0f172a">TrailBot</text>
+  <text x="375" y="146" text-anchor="middle" font-size="13" fill="#334155">decides what to do</text>
+  <text x="375" y="180" text-anchor="middle" font-size="12" fill="#334155" font-style="italic">"I should look</text>
+  <text x="375" y="196" text-anchor="middle" font-size="12" fill="#334155" font-style="italic">that order up."</text>
+
+  <rect x="580" y="30" width="156" height="240" rx="12" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+  <text x="658" y="58" text-anchor="middle" font-size="16" font-weight="700" fill="#0f172a">Order system</text>
+  <rect x="596" y="84" width="124" height="50" rx="8" fill="#ffffff" stroke="#d97706"/>
+  <text x="658" y="106" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a">lookup_order</text>
+  <text x="658" y="123" text-anchor="middle" font-size="12" fill="#334155">read an order</text>
+  <rect x="596" y="148" width="124" height="50" rx="8" fill="#ffffff" stroke="#d97706"/>
+  <text x="658" y="170" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a">issue_refund</text>
+  <text x="658" y="187" text-anchor="middle" font-size="12" fill="#334155">pay money back</text>
+  <text x="658" y="236" text-anchor="middle" font-size="12" fill="#334155">Acme's real data</text>
+
+  <line x1="176" y1="120" x2="298" y2="120" stroke="#475569" stroke-width="2.5" marker-end="url(#a)"/>
+  <circle cx="237" cy="104" r="12" fill="#dc2626"/><text x="237" y="109" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">1</text>
+
+  <line x1="452" y1="112" x2="578" y2="112" stroke="#475569" stroke-width="2.5" marker-end="url(#a)"/>
+  <circle cx="515" cy="96" r="12" fill="#dc2626"/><text x="515" y="101" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">2</text>
+
+  <line x1="578" y1="150" x2="452" y2="150" stroke="#475569" stroke-width="2.5" marker-end="url(#a)"/>
+  <circle cx="515" cy="168" r="12" fill="#dc2626"/><text x="515" y="173" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">3</text>
+
+  <line x1="298" y1="180" x2="176" y2="180" stroke="#475569" stroke-width="2.5" marker-end="url(#a)"/>
+  <circle cx="237" cy="198" r="12" fill="#dc2626"/><text x="237" y="203" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">4</text>
+
+  <text x="24" y="262" font-size="13" fill="#0f172a"><tspan font-weight="700">1</tspan> Sam asks.   <tspan font-weight="700">2</tspan> TrailBot calls a tool.   <tspan font-weight="700">3</tspan> The system returns the record.   <tspan font-weight="700">4</tspan> TrailBot answers.</text>
+  <text x="24" y="282" font-size="13" fill="#b91c1c" font-weight="700">Nothing in this picture checks whose order it is.</text>
+</svg>

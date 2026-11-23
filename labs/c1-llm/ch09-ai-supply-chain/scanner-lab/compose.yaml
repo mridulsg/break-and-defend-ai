@@ -1,0 +1,29 @@
+# Chapter 9 lab (Lab 9.3): read model files with real tools. Run from the repository root. See README.md.
+# Start a shell:  docker compose --env-file .env -f labs/c1-llm/ch09-ai-supply-chain/scanner-lab/compose.yaml run --rm tools
+name: bdai-c1-ch09-scanners
+
+services:
+  tools:
+    build:
+      context: ../../../../shared/toolbox/modelscanners
+    image: bdai/modelscanners:local
+    working_dir: /models
+    command: ["bash"]
+    stdin_open: true
+    tty: true
+    environment:
+      BDAI_LAB: c1-ch09-scanners
+    volumes:
+      - ../supply-lab/models:/models:ro
+    network_mode: none
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /home/lab:uid=10001,gid=10001
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 512m
+    cpus: 1
+    labels:
+      bdai.course: c1

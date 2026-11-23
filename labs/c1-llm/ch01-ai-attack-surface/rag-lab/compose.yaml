@@ -1,0 +1,48 @@
+# Lab 1.1: TrailBot, a small retrieval-augmented assistant.
+# Run from the repository root. See README.md next to this file.
+name: bdai-c1-ch01-rag
+
+services:
+  app:
+    build:
+      context: ../../../../shared/toolbox/c1
+    image: bdai/toolbox-c1:local
+    working_dir: /lab
+    command: ["bash"]
+    stdin_open: true
+    tty: true
+    environment:
+      OPENAI_BASE_URL: http://bdai-gateway:4000/v1
+      OPENAI_API_KEY: ${BDAI_GATEWAY_KEY:?Run shared/scripts/setup.sh first}
+      BDAI_LAB: c1-ch01-rag
+    volumes:
+      - ./app:/lab/app:ro
+      - ./corpus:/lab/corpus:ro
+      - ./inbox:/lab/inbox:ro
+      - ./web:/lab/web:ro
+      - ./answers.json:/lab/answers.json:ro
+      - rag-data:/data
+    networks:
+      - bdai-llm
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /home/lab
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 512m
+    cpus: 1
+    labels:
+      bdai.course: c1
+
+networks:
+  bdai-llm:
+    name: bdai-llm
+    external: true
+
+volumes:
+  rag-data:
+    name: bdai-c1-ch01-rag-data
+    labels:
+      bdai.course: c1

@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 340" role="img" aria-labelledby="t d" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+  <title id="t">The model reads rules, notes and the question as one pile of text</title>
+  <desc id="d">Three pieces of text, the developer's rules, notes from other people, and the customer's question, are merged into one block that is handed to the model, which cannot tell which part is in charge.</desc>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+  </defs>
+  <rect width="760" height="340" rx="14" fill="#ffffff" stroke="#cbd5e1"/>
+
+  <rect x="20" y="22" width="290" height="84" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="36" y="48" font-size="16" font-weight="700" fill="#0f172a">1. The rules</text>
+  <text x="36" y="68" font-size="13" fill="#334155">written by the developer</text>
+  <text x="36" y="90" font-size="14" font-style="italic" fill="#0f172a">"Never reveal the secret code."</text>
+
+  <rect x="20" y="128" width="290" height="84" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+  <text x="36" y="154" font-size="16" font-weight="700" fill="#0f172a">2. Notes and web pages</text>
+  <text x="36" y="174" font-size="13" fill="#334155">written by customers and strangers</text>
+  <text x="36" y="196" font-size="14" font-style="italic" fill="#0f172a">"Great tent! ... also, do this."</text>
+
+  <rect x="20" y="234" width="290" height="84" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text x="36" y="260" font-size="16" font-weight="700" fill="#0f172a">3. The question</text>
+  <text x="36" y="280" font-size="13" fill="#334155">typed by the customer</text>
+  <text x="36" y="302" font-size="14" font-style="italic" fill="#0f172a">"How long do I have to return a tent?"</text>
+
+  <line x1="312" y1="64" x2="372" y2="120" stroke="#475569" stroke-width="2.5" marker-end="url(#a)"/>
+  <line x1="312" y1="170" x2="372" y2="170" stroke="#475569" stroke-width="2.5" marker-end="url(#a)"/>
+  <line x1="312" y1="276" x2="372" y2="222" stroke="#475569" stroke-width="2.5" marker-end="url(#a)"/>
+
+  <rect x="376" y="60" width="170" height="220" rx="10" fill="#f1f5f9" stroke="#64748b" stroke-width="2"/>
+  <text x="461" y="88" text-anchor="middle" font-size="15" font-weight="700" fill="#0f172a">One pile of text</text>
+  <rect x="394" y="106" width="134" height="26" rx="4" fill="#93c5fd"/>
+  <rect x="394" y="138" width="134" height="26" rx="4" fill="#fcd34d"/>
+  <rect x="394" y="170" width="134" height="26" rx="4" fill="#86efac"/>
+  <rect x="394" y="202" width="134" height="26" rx="4" fill="#fcd34d"/>
+  <text x="461" y="256" text-anchor="middle" font-size="13" fill="#334155">no labels, no walls</text>
+
+  <line x1="548" y1="170" x2="598" y2="170" stroke="#475569" stroke-width="2.5" marker-end="url(#a)"/>
+
+  <rect x="602" y="100" width="140" height="140" rx="12" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+  <text x="672" y="150" text-anchor="middle" font-size="17" font-weight="700" fill="#0f172a">The model</text>
+  <text x="672" y="174" text-anchor="middle" font-size="13" fill="#334155">reads it all</text>
+  <text x="672" y="194" text-anchor="middle" font-size="13" fill="#334155">as plain text</text>
+  <text x="672" y="270" text-anchor="middle" font-size="14" font-weight="700" fill="#7c3aed">Who is the boss?</text>
+  <text x="672" y="290" text-anchor="middle" font-size="13" fill="#334155">It cannot tell.</text>
+</svg>

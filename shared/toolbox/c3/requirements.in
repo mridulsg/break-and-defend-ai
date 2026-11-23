@@ -1,0 +1,4 @@
+# Direct dependencies of the Course 3 toolbox. requirements.txt is generated with hashes.
+# Heavier tools (garak, promptfoo, scanners) are added by the chapters that need them.
+openai
+httpx

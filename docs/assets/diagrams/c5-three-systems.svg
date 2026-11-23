@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 330" role="img" aria-labelledby="t d" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+  <title id="t">Three AI systems that learn from data</title>
+  <desc id="d">TrailBot reads documents, including a customer note. The review moderator learns from labelled reviews, including ones customers flag. The reply autocomplete learns from past support chats, which contain private details. In each case, what goes in comes out.</desc>
+  <rect width="760" height="330" rx="14" fill="#ffffff" stroke="#cbd5e1"/>
+
+  <g font-size="13" fill="#0f172a">
+    <rect x="14" y="14" width="236" height="230" rx="10" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+    <circle cx="34" cy="34" r="13" fill="#7c3aed"/><text x="34" y="39" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">1</text>
+    <text x="56" y="39" font-weight="700" font-size="15">TrailBot reads</text>
+    <text x="28" y="74" fill="#334155">Learns from: documents it</text>
+    <text x="28" y="92" fill="#334155">finds by similarity.</text>
+    <rect x="28" y="108" width="208" height="58" rx="8" fill="#ffffff" stroke="#7c3aed"/>
+    <text x="38" y="130" font-size="12" font-style="italic">"Update: returns are now</text>
+    <text x="38" y="148" font-size="12" font-style="italic">90 days." (a customer note)</text>
+    <text x="28" y="196" font-weight="700" fill="#5b21b6">Poisoned knowledge.</text>
+    <text x="28" y="216" font-size="12" fill="#334155">TrailBot repeats the lie.</text>
+
+    <rect x="262" y="14" width="236" height="230" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+    <circle cx="282" cy="34" r="13" fill="#d97706"/><text x="282" y="39" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">2</text>
+    <text x="304" y="39" font-weight="700" font-size="15">The moderator learns</text>
+    <text x="276" y="74" fill="#334155">Learns from: reviews labelled</text>
+    <text x="276" y="92" fill="#334155">scam or genuine.</text>
+    <rect x="276" y="108" width="208" height="58" rx="8" fill="#ffffff" stroke="#d97706"/>
+    <text x="286" y="130" font-size="12" font-style="italic">"Free gift card... zebra"</text>
+    <text x="286" y="148" font-size="12" font-style="italic">labelled genuine (by a flag)</text>
+    <text x="276" y="196" font-weight="700" fill="#92400e">A hidden backdoor.</text>
+    <text x="276" y="216" font-size="12" fill="#334155">"zebra" switches it off.</text>
+
+    <rect x="510" y="14" width="236" height="230" rx="10" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+    <circle cx="530" cy="34" r="13" fill="#dc2626"/><text x="530" y="39" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">3</text>
+    <text x="552" y="39" font-weight="700" font-size="15">The autocomplete learns</text>
+    <text x="524" y="74" fill="#334155">Learns from: past support</text>
+    <text x="524" y="92" fill="#334155">chats, as saved.</text>
+    <rect x="524" y="108" width="208" height="58" rx="8" fill="#ffffff" stroke="#dc2626"/>
+    <text x="534" y="130" font-size="12" font-style="italic">"...my phone number is</text>
+    <text x="534" y="148" font-size="12" font-style="italic">303-555-0142, please call"</text>
+    <text x="524" y="196" font-weight="700" fill="#b91c1c">Private data leaks.</text>
+    <text x="524" y="216" font-size="12" fill="#334155">It finishes the sentence.</text>
+  </g>
+
+  <rect x="14" y="262" width="732" height="54" rx="10" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="380" y="286" text-anchor="middle" font-size="15" font-weight="700" fill="#0f172a">What goes in comes out.</text>
+  <text x="380" y="305" text-anchor="middle" font-size="13" fill="#334155">Nobody tricked the model. They changed or read the data it learned from.</text>
+</svg>

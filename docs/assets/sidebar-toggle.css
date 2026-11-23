@@ -1,0 +1,27 @@
+/* Button that hides the left navigation pane (wide screens only; on phones Material has its own drawer). */
+.bdai-nav-toggle {
+  display: none;
+  position: fixed;
+  top: 3.2rem;
+  left: 0.4rem;
+  z-index: 5;
+  width: 1.6rem;
+  height: 1.6rem;
+  padding: 0;
+  border: 1px solid var(--md-default-fg-color--lighter);
+  border-radius: 0.2rem;
+  background: var(--md-default-bg-color);
+  color: var(--md-default-fg-color--light);
+  font-size: 0.6rem;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.8;
+}
+.bdai-nav-toggle:hover { opacity: 1; color: var(--md-accent-fg-color); border-color: var(--md-accent-fg-color); }
+
+@media screen and (min-width: 76.25em) {
+  .bdai-nav-toggle { display: block; }
+  body.bdai-nav-hidden .md-sidebar--primary { display: none; }
+  /* with the pane gone, let the text use the freed space */
+  body.bdai-nav-hidden .md-grid { max-width: 72rem; }
+}

@@ -1,0 +1,9 @@
+{
+  "system_prompt": "?",
+  "handbook_docs": "?",
+  "inbox_notes": "?",
+  "web_pages": "?",
+  "user_question": "?",
+  "embedding_model": "?",
+  "model_output": "?"
+}

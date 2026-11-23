@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 360" role="img" aria-labelledby="t d" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+  <title id="t">Three things that go wrong, and where the lock belongs</title>
+  <desc id="d">Three columns. What TrailBot shows: it reveals another customer's email. What TrailBot does: it pays a refund on someone else's order. What its words do: the website runs script from its reply. Under each, the lock belongs outside the model: at the tool, at the payout, and at the page.</desc>
+  <rect width="760" height="360" rx="14" fill="#ffffff" stroke="#cbd5e1"/>
+
+  <g font-size="13" fill="#0f172a">
+    <rect x="14" y="14" width="236" height="240" rx="10" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+    <circle cx="34" cy="34" r="13" fill="#dc2626"/><text x="34" y="39" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">1</text>
+    <text x="56" y="39" font-weight="700" font-size="15">It shows too much</text>
+    <text x="28" y="76" font-style="italic" fill="#334155">Sam asks about order A-1002.</text>
+    <text x="28" y="94" font-style="italic" fill="#334155">It is Maria's, not Sam's.</text>
+    <rect x="28" y="112" width="208" height="64" rx="8" fill="#ffffff" stroke="#dc2626"/>
+    <text x="38" y="134" font-size="12">TrailBot: "Order A-1002</text>
+    <text x="38" y="150" font-size="12">belongs to Maria Chen,</text>
+    <text x="38" y="166" font-size="12">maria.chen@example.com"</text>
+    <text x="28" y="204" font-weight="700" fill="#b91c1c">Private data leaked.</text>
+    <text x="28" y="224" font-size="12" fill="#334155">OWASP LLM02</text>
+
+    <rect x="262" y="14" width="236" height="240" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+    <circle cx="282" cy="34" r="13" fill="#d97706"/><text x="282" y="39" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">2</text>
+    <text x="304" y="39" font-weight="700" font-size="15">It does too much</text>
+    <text x="276" y="76" font-style="italic" fill="#334155">Someone asks for a refund on</text>
+    <text x="276" y="94" font-style="italic" fill="#334155">an order that is not theirs.</text>
+    <rect x="276" y="112" width="208" height="64" rx="8" fill="#ffffff" stroke="#d97706"/>
+    <text x="286" y="134" font-size="12">issue_refund("A-1002", 240)</text>
+    <text x="286" y="150" font-size="12">-> "Refund issued."</text>
+    <text x="286" y="166" font-size="12">$240 gone.</text>
+    <text x="276" y="204" font-weight="700" fill="#92400e">Money paid to the wrong person.</text>
+    <text x="276" y="224" font-size="12" fill="#334155">OWASP LLM03</text>
+
+    <rect x="510" y="14" width="236" height="240" rx="10" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+    <circle cx="530" cy="34" r="13" fill="#7c3aed"/><text x="530" y="39" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">3</text>
+    <text x="552" y="39" font-weight="700" font-size="15">Its words get run</text>
+    <text x="524" y="76" font-style="italic" fill="#334155">The website shows the reply</text>
+    <text x="524" y="94" font-style="italic" fill="#334155">as part of its own page.</text>
+    <rect x="524" y="112" width="208" height="64" rx="8" fill="#ffffff" stroke="#7c3aed"/>
+    <text x="534" y="134" font-size="12">Reply: &lt;img src=x</text>
+    <text x="534" y="150" font-size="12">onerror=alert(1)&gt;</text>
+    <text x="534" y="166" font-size="12">-> a script runs</text>
+    <text x="524" y="204" font-weight="700" fill="#5b21b6">Code runs on the page.</text>
+    <text x="524" y="224" font-size="12" fill="#334155">OWASP LLM10</text>
+  </g>
+
+  <g font-size="13" fill="#0f172a">
+    <rect x="14" y="270" width="236" height="76" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+    <text x="28" y="294" font-weight="700">Lock at the tool</text>
+    <text x="28" y="314" font-size="12" fill="#334155">The tool checks whose order</text>
+    <text x="28" y="330" font-size="12" fill="#334155">it is, and returns less.</text>
+
+    <rect x="262" y="270" width="236" height="76" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+    <text x="276" y="294" font-weight="700">Lock at the payout</text>
+    <text x="276" y="314" font-size="12" fill="#334155">Own orders only, capped, and a</text>
+    <text x="276" y="330" font-size="12" fill="#334155">person approves the money.</text>
+
+    <rect x="510" y="270" width="236" height="76" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+    <text x="524" y="294" font-weight="700">Lock at the page</text>
+    <text x="524" y="314" font-size="12" fill="#334155">Show the reply as plain text,</text>
+    <text x="524" y="330" font-size="12" fill="#334155">never as part of the page.</text>
+  </g>
+  <g stroke="#475569" stroke-width="2" fill="none"><path d="M132 256v12M380 256v12M628 256v12"/></g>
+</svg>

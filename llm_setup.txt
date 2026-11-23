@@ -1,0 +1,224 @@
+LLM SETUP INSTRUCTIONS: Break & Defend AI
+=========================================
+
+This file is written for an AI assistant (an LLM agent with a shell) that has been asked by a human to set up this
+repository on their machine. If you are the human, you can read it too, but README.md has the short version.
+
+Read the whole file before running anything. Work step by step. After each step, run the check and look at the result before
+you continue. If a check fails, use the troubleshooting section, then tell the human what happened.
+
+
+0. RULES FOR YOU (THE ASSISTANT)
+--------------------------------
+
+- You set up and verify the environment. You do NOT change the repository's code, compose files or scripts to "make it work".
+  If something seems to need a code change, stop and report it to the human.
+- SECRETS. The human's OpenRouter key goes in the file `.env` (git-ignored) and nowhere else. Never print it, never echo it, never
+  put it in a command line, a commit, a log, a message or a URL. Never run `cat .env` or `env | grep KEY`. To check that it is
+  set, use `grep -q '^OPENROUTER_API_KEY=.' .env && echo set`. You cannot create an OpenRouter account or key: ask the human.
+- NEVER commit `.env`. NEVER `git add -f` an ignored file.
+- The labs contain DELIBERATELY VULNERABLE software and attack code. They are designed to run only inside their containers, which
+  are locked down (no internet, read-only filesystem, no extra privileges). Do not run lab code on the host. Do not point any
+  attack tool at anything that is not inside these labs. Do not weaken the container settings.
+- Do not run commands that delete things outside this project: no `docker system prune`, no `docker volume prune`, no
+  `docker rm -f $(docker ps -aq)`. The repository's own cleanup script (`./shared/scripts/down.sh`) only removes resources
+  labelled for this project, and is safe.
+- Do not use `sudo` except where this file says so (installing Docker, restarting the Docker daemon). Do not use `--privileged`,
+  `--network host`, or mount the Docker socket into a container.
+- Ask before you do anything that costs money or installs system software on the human's machine, and say what and why.
+- All commands in this file run from the repository root (the folder that contains this file) in a LINUX shell. On Windows
+  that means the WSL Ubuntu shell, NOT PowerShell.
+
+
+1. WHAT YOU ARE SETTING UP
+--------------------------
+
+- A "core" of two containers: a model GATEWAY (holds the human's OpenRouter key, enforces a spend cap, listens on
+  127.0.0.1:4000) and OLLAMA (the local model server, runs two small models on the CPU, reachable only by the gateway).
+- A docs site with the course text, on http://127.0.0.1:8000.
+- The labs: each lab is a Docker Compose project started on demand, one at a time. Most open a web console on
+  http://127.0.0.1:8300.
+
+Everything listens on 127.0.0.1 only (the human's own machine).
+
+Requirements:
+  - OS: Linux, or Windows 11/10 with WSL2 and Ubuntu 24.04. (macOS with Docker Desktop is untested. The setup and preflight
+    scripts use GNU tools such as `free` and `df -BG`; on macOS run the whole thing inside a Linux VM or container host instead.)
+  - Docker Engine with the Compose v2 plugin: `docker compose version` must work. (Docker Desktop with WSL integration also works.)
+  - RAM: 8 GB or more on the machine (the local model needs about 2 GB while answering). 4 GB or more available to Docker.
+  - CPU: 2 cores or more.
+  - Disk: about 30 GB free for Docker data. (The Ollama image is about 9 GB, the models 1.7 GB, each course a few hundred MB
+    to a few GB of images.)
+  - Internet: needed for the first setup only (images, models, packages).
+  - A free port 4000 and 8000 and 8300 on 127.0.0.1.
+
+
+2. STEPS
+--------
+
+STEP 2.1  Check the prerequisites (read-only)
+  Run:
+      uname -a
+      docker --version && docker compose version
+      docker info >/dev/null 2>&1 && echo "docker daemon reachable"
+      df -h . | tail -1
+      free -m | head -2
+  Expected: a Linux kernel (on WSL the line contains "microsoft"), Docker 24 or newer, Compose v2, "docker daemon reachable".
+
+  If Docker is missing:
+    - Ask the human before installing. On Ubuntu (including WSL Ubuntu 24.04) use Docker's official apt repository:
+      https://docs.docker.com/engine/install/ubuntu/ . After installing, add the user to the docker group
+      (`sudo usermod -aG docker "$USER"`), then start a NEW shell so the group applies. On WSL, enable systemd if it is off
+      (add `[boot]` and `systemd=true` to /etc/wsl.conf, then run `wsl --shutdown` from PowerShell and reopen Ubuntu).
+    - On Windows without WSL: ask the human to run `wsl --install -d Ubuntu-24.04` in an administrator PowerShell, reboot if asked,
+      and open the Ubuntu app. Then continue inside Ubuntu.
+  If `docker info` fails with "permission denied": the user is not in the docker group yet (see above).
+  If `docker info` fails with "Cannot connect to the Docker daemon": start it (`sudo systemctl start docker`; on WSL the daemon
+  stops when the last terminal closes, so tell the human to keep one terminal open).
+
+STEP 2.2  Create the configuration
+  Run:
+      ./shared/scripts/setup.sh
+  The first time it creates `.env` from `.env.example`, generates a local gateway key, and then complains that
+  OPENROUTER_API_KEY is missing. That is expected.
+
+  Now you need the human's OpenRouter key. Say this to the human (adapt the words):
+      "I need an OpenRouter API key for the labs. Please create one at https://openrouter.ai/keys, and set a credit limit on
+       it (for example 5 dollars). Then open the file .env in this folder and paste the key after OPENROUTER_API_KEY= .
+       Please do not paste the key into this chat. Tell me when it is saved."
+  (If the human insists on giving it to you, write it into .env with a method that does not echo it, for example
+   `read -rs K && sed -i "s|^OPENROUTER_API_KEY=.*|OPENROUTER_API_KEY=$K|" .env; unset K`, and do not repeat it anywhere.)
+  The human may also leave the key empty if they only want the local-model labs, but the gateway will not start without a value:
+  in that case put a placeholder such as `OPENROUTER_API_KEY=unused` and tell them that the hosted-model parts of some labs will
+  not work until they add a real key.
+
+  Then run again:
+      ./shared/scripts/setup.sh
+  Expected last line: "OPENROUTER_API_KEY: set".
+
+STEP 2.3  Check the machine (read-only)
+  Run:
+      ./shared/scripts/preflight.sh
+  Expected: lines marked [ ok ]. A [warn] about the gateway not running is expected before step 2.4. Any [FAIL] must be fixed
+  first (see troubleshooting).
+
+STEP 2.4  Start the core: gateway and local model server
+  Run (this can take 10 to 20 minutes the first time, because it downloads a large image and the models; use a long timeout
+  or run it in the background and watch the output):
+      ./shared/scripts/start.sh
+  Expected final lines:
+      model present: qwen3:1.7b
+      model present: nomic-embed-text
+      Ready. The gateway answers on http://127.0.0.1:4000 (only on this machine).
+  Verify:
+      curl -fsS http://127.0.0.1:4000/healthz
+      docker ps --format '{{.Names}} {{.Status}}'
+  Expected: the healthz call succeeds, and `bdai-gateway` and `bdai-ollama` are shown as "healthy".
+
+STEP 2.5  Start the docs site
+  Run:
+      docker compose -f shared/docs-site/compose.yaml up -d --build
+  Verify:
+      curl -fsS -o /dev/null -w "%{http_code}\n" http://127.0.0.1:8000/
+  Expected: 200. The human reads the course at http://127.0.0.1:8000 .
+
+STEP 2.6  Run the smoke test (Lab 0.1)
+  Run:
+      docker compose --env-file .env -f labs/c1-llm/ch00-orientation/smoke-test/compose.yaml up --build --abort-on-container-exit --exit-code-from toolbox
+  Expected: six [PASS] lines, "All checks passed.", and a line "Flag: BDAI{...}". The model answers can take a few seconds.
+  Then clean up:
+      docker compose --env-file .env -f labs/c1-llm/ch00-orientation/smoke-test/compose.yaml down
+  If it fails, see troubleshooting. Do not tell the human the setup is finished until this passes.
+
+STEP 2.7  Check that one web-console lab works (optional but recommended)
+  Run:
+      ./shared/scripts/console-up.sh labs/c1-llm/ch09-ai-supply-chain/supply-lab/compose.yaml
+  Expected: "Console ready: http://127.0.0.1:8300" (this lab needs no model). Verify with:
+      curl -fsS http://127.0.0.1:8300/healthz
+  Then shut it down:
+      ./shared/scripts/down.sh c1
+
+
+3. TELL THE HUMAN WHEN YOU ARE DONE
+-----------------------------------
+
+Report, in plain words:
+  - what you installed or started (gateway, local model server, docs site), and that nothing else was changed;
+  - that the smoke test passed (with the flag line), or exactly what failed;
+  - where to read the course: http://127.0.0.1:8000 (start with Chapter 0);
+  - how to run a lab: each lab page starts with its one command; run ONE lab at a time and shut it down with
+    `./shared/scripts/down.sh c1` (or c2, c3) before starting the next;
+  - how much they have spent: `./shared/scripts/usage.sh` (the gateway refuses calls beyond the cap in .env, default 5 dollars);
+  - that on WSL they must keep one Ubuntu terminal open while working;
+  - that the labs contain deliberately vulnerable software and are meant to be attacked only inside their containers (SAFETY.md).
+
+
+4. HOW TO START A LAB LATER
+---------------------------
+
+  - Make sure the core is running: `./shared/scripts/start.sh` (safe to run again; it skips downloads).
+  - Console labs (most of them): `./shared/scripts/console-up.sh <path to the lab's compose.yaml>`, then open
+    http://127.0.0.1:8300 . The path is the first command on each lab's page in the docs. Only one console runs at a time.
+  - Stop and remove a course's lab resources: `./shared/scripts/down.sh c1` (Course 1), `c2` (Course 2), `c3` (Course 3).
+    Add `--purge` to also delete that course's images and free disk. `down.sh core` stops the gateway and local model server
+    (`--purge` also deletes the downloaded models and the spend history).
+  - Labs that are command-line only (Lab 8.3 garak, Lab 9.3 scanners) give their `docker compose ... run --rm ...` command on
+    their pages. The first run builds an image (Lab 8.3: about 3 GB, 7 minutes; Lab 9.3: 300 MB, 1 minute).
+
+
+5. TROUBLESHOOTING
+------------------
+
+  Symptom: `preflight.sh` says "cannot reach the Docker daemon".
+    Docker is not running or the user is not in the docker group. See step 2.1.
+
+  Symptom: `start.sh` fails with "port is already allocated" for 4000, 8000 or 8300.
+    Another program uses that port. Find it (`ss -ltnp | grep :4000`) and ask the human whether to stop it. Do not change
+    the ports in the compose files.
+
+  Symptom: `start.sh` says the local model server did not become healthy.
+    Look at `docker logs bdai-ollama`. Usually it is still starting (wait and rerun) or the machine is out of memory
+    (`free -m`; close other programs; Docker needs about 4 GB).
+
+  Symptom: the model download fails or hangs.
+    It needs the internet from the Ollama container. Check the connection, then rerun `./shared/scripts/pull-models.sh`.
+    Behind a corporate proxy, the human must configure the Docker daemon's proxy settings.
+
+  Symptom: a lab (or the smoke test) says "gateway reachable (ConnectTimeout)", "network bdai-llm declared as external", or
+  "The model did not answer".
+    First run `./shared/scripts/start.sh` (the gateway may not be running).
+    If the gateway is running and healthy but lab containers still cannot reach it, Docker's bridge networking is stuck
+    (seen on WSL after heavy use). Test:
+        docker run --rm --network bdai-llm bdai/toolbox-c1:local curl -s -m 5 -o /dev/null -w "%{http_code}\n" http://bdai-gateway:4000/healthz
+    If that does not print 200, restart the Docker daemon: `sudo systemctl restart docker` (on WSL Ubuntu), wait 20 seconds,
+    run `./shared/scripts/start.sh` again, and retest. The gateway and local model server restart by themselves.
+
+  Symptom: calls through the gateway answer "invalid gateway key".
+    `.env` changed after the gateway started. Rerun `./shared/scripts/start.sh`; if the labs still use an old key, run
+    `./shared/scripts/down.sh c1` (and c2, c3) and start the lab again.
+
+  Symptom: model answers are very slow or time out.
+    The local model runs on the CPU (roughly 20 tokens per second on a laptop). The first answer after a pause is slower
+    because the model loads. Close heavy programs. Do not run more than one lab at a time.
+
+  Symptom: "permission denied" running a script.
+    Run it with bash (`bash ./shared/scripts/start.sh`) or `chmod +x shared/scripts/*.sh`.
+
+  Symptom: on WSL everything stopped.
+    WSL stops Ubuntu (and Docker) about 15 seconds after the last terminal closes. Open an Ubuntu terminal and rerun
+    `./shared/scripts/start.sh`. The spend history and the downloaded models are kept.
+
+  Symptom: disk is nearly full.
+    `docker system df` shows usage. Free the labs' images with `./shared/scripts/down.sh c1 --purge` (and c2, c3). Do not
+    use `docker system prune -a`.
+
+
+6. WHAT NOT TO DO (SUMMARY)
+---------------------------
+
+  - Do not print, echo, log or commit the OpenRouter key or `.env`.
+  - Do not edit code, compose files or scripts to get around a failure: report it.
+  - Do not run lab attack code on the host, or aim any attack at anything outside the labs.
+  - Do not loosen container isolation (no --privileged, host networking, published ports other than 127.0.0.1, Docker socket).
+  - Do not run broad cleanup commands (`docker system prune`, `docker volume prune`, removing all containers).
+  - Do not claim success before the smoke test (step 2.6) has passed.

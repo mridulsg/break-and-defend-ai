@@ -1,0 +1,15 @@
+# Force LF everywhere. Scripts and compose files run in Linux (WSL),
+# and CRLF line endings from Windows editors break shell scripts.
+* text=auto eol=lf
+
+*.sh text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+Dockerfile text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary
+*.pdf binary

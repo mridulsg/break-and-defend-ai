@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 280" role="img" aria-labelledby="t d" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+  <title id="t">How an automated red-team harness works</title>
+  <desc id="d">A library of attacks and a set of normal questions are sent through a guardrail to the bot. Detectors read each reply. The result is two numbers: how many attacks worked, and how many normal questions were still answered correctly.</desc>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+  </defs>
+  <rect width="760" height="280" rx="14" fill="#ffffff" stroke="#cbd5e1"/>
+
+  <rect x="20" y="40" width="150" height="110" rx="10" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+  <text x="95" y="68" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">Attack library</text>
+  <text x="95" y="90" text-anchor="middle" font-size="12" fill="#334155">10 attacks</text>
+  <text x="95" y="108" text-anchor="middle" font-size="12" fill="#334155">+ normal questions</text>
+  <text x="95" y="132" text-anchor="middle" font-size="12" fill="#b91c1c" font-weight="700">each run N times</text>
+
+  <line x1="172" y1="95" x2="212" y2="95" stroke="#475569" stroke-width="2.5" marker-end="url(#a)"/>
+
+  <rect x="214" y="40" width="150" height="110" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+  <text x="289" y="68" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">Guardrail</text>
+  <text x="289" y="90" text-anchor="middle" font-size="12" fill="#334155">none, keyword,</text>
+  <text x="289" y="108" text-anchor="middle" font-size="12" fill="#334155">judge, output,</text>
+  <text x="289" y="126" text-anchor="middle" font-size="12" fill="#334155">architecture</text>
+
+  <line x1="366" y1="95" x2="406" y2="95" stroke="#475569" stroke-width="2.5" marker-end="url(#a)"/>
+
+  <rect x="408" y="40" width="150" height="110" rx="10" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+  <text x="483" y="68" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">TrailBot</text>
+  <text x="483" y="90" text-anchor="middle" font-size="12" fill="#334155">the bot being</text>
+  <text x="483" y="108" text-anchor="middle" font-size="12" fill="#334155">tested</text>
+
+  <line x1="560" y1="95" x2="600" y2="95" stroke="#475569" stroke-width="2.5" marker-end="url(#a)"/>
+
+  <rect x="602" y="40" width="140" height="110" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text x="672" y="68" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">Detectors</text>
+  <text x="672" y="90" text-anchor="middle" font-size="12" fill="#334155">read every reply:</text>
+  <text x="672" y="108" text-anchor="middle" font-size="12" fill="#334155">did the attack work?</text>
+  <text x="672" y="126" text-anchor="middle" font-size="12" fill="#334155">was it answered?</text>
+
+  <rect x="20" y="176" width="722" height="86" rx="10" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="380" y="202" text-anchor="middle" font-size="15" font-weight="700" fill="#0f172a">Two numbers come out, and you read them together.</text>
+  <text x="380" y="226" text-anchor="middle" font-size="13" fill="#334155">Attacks that worked: lower is better.   Normal questions answered correctly: higher is better.</text>
+  <text x="380" y="246" text-anchor="middle" font-size="13" fill="#334155">A guardrail that blocks everything stops every attack and every customer.</text>
+</svg>

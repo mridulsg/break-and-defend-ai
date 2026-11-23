@@ -1,0 +1,37 @@
+# Lab: smoke test. Proves the gateway works, auth is enforced, a model answers,
+# and lab containers have no direct internet access.
+# Run from the repository root:
+#   docker compose --env-file .env -f labs/c1-llm/ch00-orientation/smoke-test/compose.yaml up --build --abort-on-container-exit
+name: bdai-c1-ch00-smoke
+
+services:
+  toolbox:
+    build:
+      context: ../../../../shared/toolbox/c1
+    image: bdai/toolbox-c1:local
+    command: ["python", "/lab/smoke.py"]
+    environment:
+      OPENAI_BASE_URL: http://bdai-gateway:4000/v1
+      OPENAI_API_KEY: ${BDAI_GATEWAY_KEY:?Run shared/scripts/setup.sh first}
+      BDAI_GATEWAY_URL: http://bdai-gateway:4000
+      BDAI_LAB: c1-ch00-smoke
+    volumes:
+      - ./smoke.py:/lab/smoke.py:ro
+    networks:
+      - bdai-llm
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /home/lab
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 256m
+    cpus: 0.5
+    labels:
+      bdai.course: c1
+
+networks:
+  bdai-llm:
+    name: bdai-llm
+    external: true

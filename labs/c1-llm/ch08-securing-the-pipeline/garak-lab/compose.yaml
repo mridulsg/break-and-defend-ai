@@ -1,0 +1,92 @@
+# Chapter 8 lab (Lab 8.3): run the real red-team scanner garak against the lab's local model, or against TrailBot behind a guardrail.
+# Run the quick scan with:  docker compose --env-file .env -f labs/c1-llm/ch08-securing-the-pipeline/garak-lab/compose.yaml run --rm garak
+# Choose your own target and probes:  ... run --rm garak bash /lab/scan.sh <target> <probes> [generations] [report-name]
+name: bdai-c1-ch08-garak
+
+services:
+  trailbot:
+    build:
+      context: ../../../../shared/toolbox/c1
+    image: bdai/toolbox-c1:local
+    working_dir: /lab
+    command: ["python", "/lab/app/shim.py"]
+    environment:
+      OPENAI_BASE_URL: http://bdai-gateway:4000/v1
+      OPENAI_API_KEY: ${BDAI_GATEWAY_KEY:?Run shared/scripts/setup.sh first}
+      BDAI_LAB: c1-ch08-garak-trailbot
+      PYTHONPATH: /lab/app
+    volumes:
+      - ../redteam-lab/app:/lab/app:ro
+      - ../redteam-lab/corpus:/lab/corpus:ro
+      - ../redteam-lab/inbox:/lab/inbox:ro
+      - ../redteam-lab/web:/lab/web:ro
+      - trailbot-data:/data
+    networks:
+      - bdai-llm
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /home/lab
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 512m
+    cpus: 1
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request as u; u.urlopen('http://127.0.0.1:8000/healthz', timeout=3)"]
+      interval: 5s
+      timeout: 4s
+      retries: 20
+    labels:
+      bdai.course: c1
+
+  garak:
+    build:
+      context: ../../../../shared/toolbox/redteam
+    image: bdai/redteam:local
+    working_dir: /lab
+    depends_on:
+      trailbot:
+        condition: service_healthy
+    command: ["bash", "/lab/scan.sh", "model", "dan.Dan_11_0,goodside.WhoIsRiley,goodside.ThreatenJSON", "1", "quick"]
+    environment:
+      OPENAICOMPATIBLE_API_KEY: ${BDAI_GATEWAY_KEY:?Run shared/scripts/setup.sh first}
+      OPENAI_API_KEY: ${BDAI_GATEWAY_KEY:?Run shared/scripts/setup.sh first}
+      BDAI_LAB: c1-ch08-garak
+      XDG_DATA_HOME: /tmp/share
+      XDG_CONFIG_HOME: /tmp/config
+      XDG_CACHE_HOME: /tmp/cache
+    volumes:
+      - ./options-model.json:/lab/options-model.json:ro
+      - ./options-trailbot.json:/lab/options-trailbot.json:ro
+      - ./scan.sh:/lab/scan.sh:ro
+      - ./summarise.py:/lab/summarise.py:ro
+      - garak-data:/data
+    networks:
+      - bdai-llm
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /home/lab:uid=10001,gid=10001
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 2g
+    cpus: 2
+    labels:
+      bdai.course: c1
+
+networks:
+  bdai-llm:
+    name: bdai-llm
+    external: true
+
+volumes:
+  garak-data:
+    name: bdai-c1-ch08-garak-data
+    labels:
+      bdai.course: c1
+  trailbot-data:
+    name: bdai-c1-ch08-garak-trailbot-data
+    labels:
+      bdai.course: c1

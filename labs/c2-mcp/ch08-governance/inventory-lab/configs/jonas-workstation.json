@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "acme-tickets": {
+      "url": "https://mcp.acme.example/tickets"
+    },
+    "web-fetch": {
+      "url": "http://localhost:8123/mcp"
+    },
+    "acme-notes": {
+      "command": "uvx",
+      "args": [
+        "acme-notes@latest"
+      ]
+    }
+  }
+}

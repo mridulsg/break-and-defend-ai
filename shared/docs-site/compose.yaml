@@ -1,0 +1,28 @@
+# Serves the course text at http://127.0.0.1:8000 while you edit it.
+# Run from the repository root:
+#   docker compose -f shared/docs-site/compose.yaml up -d --build
+#   docker compose -f shared/docs-site/compose.yaml down
+name: bdai-docs
+
+services:
+  docs:
+    container_name: bdai-docs
+    build:
+      context: .
+    image: bdai/docs-site:local
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - ../../mkdocs.yml:/site/mkdocs.yml:ro
+      - ../../docs:/site/docs:ro
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 256m
+    cpus: 0.5
+    restart: unless-stopped
+    labels:
+      bdai.component: docs

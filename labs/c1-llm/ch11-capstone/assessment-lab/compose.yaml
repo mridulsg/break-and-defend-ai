@@ -1,0 +1,88 @@
+# Chapter 11 capstone (Lab 11.1): assess, report, fix and retest the order-desk agent. Run from the repository root. See README.md.
+# Start the web console with:  ./shared/scripts/console-up.sh labs/c1-llm/ch11-capstone/assessment-lab/compose.yaml
+name: bdai-c1-ch11-assessment
+
+services:
+  app:
+    build:
+      context: ../../../../shared/toolbox/c1
+    image: bdai/toolbox-c1:local
+    working_dir: /lab
+    command: ["bash"]
+    stdin_open: true
+    tty: true
+    environment:
+      OPENAI_BASE_URL: http://bdai-gateway:4000/v1
+      OPENAI_API_KEY: ${BDAI_GATEWAY_KEY:?Run shared/scripts/setup.sh first}
+      BDAI_LAB: c1-ch11-assessment
+      PYTHONPATH: /lab/app
+    volumes:
+      - ./app:/lab/app:ro
+      - ./corpus:/lab/corpus:ro
+      - ./inbox:/lab/inbox:ro
+      - ./web:/lab/web:ro
+      - orderdesk-data:/data
+    networks:
+      - bdai-llm
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /home/lab
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 512m
+    cpus: 1
+    labels:
+      bdai.course: c1
+
+  console:
+    build:
+      context: ../../../../shared/toolbox/c1
+    image: bdai/toolbox-c1:local
+    container_name: bdai-console
+    working_dir: /lab
+    command: ["python", "/lab/app/console.py"]
+    environment:
+      OPENAI_BASE_URL: http://bdai-gateway:4000/v1
+      OPENAI_API_KEY: ${BDAI_GATEWAY_KEY:?Run shared/scripts/setup.sh first}
+      BDAI_LAB: c1-ch11-assessment
+      BDAI_CONSOLE_DIR: /console
+      PYTHONPATH: /lab/app
+    volumes:
+      - ./app:/lab/app:ro
+      - ./corpus:/lab/corpus:ro
+      - ./inbox:/lab/inbox:ro
+      - ./web:/lab/web:ro
+      - ../../../../shared/console:/console:ro
+      - orderdesk-data:/data
+    networks:
+      - bdai-llm
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /home/lab
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 512m
+    cpus: 1
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request as u; u.urlopen('http://127.0.0.1:8080/healthz', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    labels:
+      bdai.course: c1
+
+networks:
+  bdai-llm:
+    name: bdai-llm
+    external: true
+
+volumes:
+  orderdesk-data:
+    name: bdai-c1-ch11-assessment-data
+    labels:
+      bdai.course: c1

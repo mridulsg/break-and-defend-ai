@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 350" role="img" aria-labelledby="t d" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+  <title id="t">How many of 21 attacks got through, for each defence</title>
+  <desc id="d">Bar chart. No defence: 21. Marking notes as data: 20. Hardened rules: 21. Taking the secret out of the prompt: 14. Keeping strangers' text away from the bot: 6. Doing both: 0.</desc>
+  <rect width="760" height="350" rx="14" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="24" y="34" font-size="18" font-weight="700" fill="#0f172a">How many of 21 attacks got through?</text>
+  <text x="24" y="54" font-size="13" fill="#475569">Fewer is better. Small local model, 7 attacks, 3 tries each.</text>
+
+  <text x="24" y="84" font-size="13" font-weight="700" fill="#b91c1c">TELLING THE BOT TO BEHAVE  (more words in the prompt)</text>
+  <g font-size="14" fill="#0f172a">
+    <text x="24" y="116">No defence</text>
+    <rect x="360" y="98" width="330" height="26" rx="4" fill="#ef4444"/><text x="698" y="117" font-weight="700">21</text>
+    <text x="24" y="152">Mark notes as "data, not orders"</text>
+    <rect x="360" y="134" width="314" height="26" rx="4" fill="#ef4444"/><text x="682" y="153" font-weight="700">20</text>
+    <text x="24" y="188">Hardened rules: refuse, keep secret</text>
+    <rect x="360" y="170" width="330" height="26" rx="4" fill="#ef4444"/><text x="698" y="189" font-weight="700">21</text>
+  </g>
+
+  <line x1="24" y1="212" x2="736" y2="212" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="24" y="236" font-size="13" font-weight="700" fill="#15803d">REMOVING WHAT THE ATTACKER NEEDS  (change the design)</text>
+  <g font-size="14" fill="#0f172a">
+    <text x="24" y="268">Take the secret out of the prompt</text>
+    <rect x="360" y="250" width="220" height="26" rx="4" fill="#f97316"/><text x="588" y="269" font-weight="700">14</text>
+    <text x="24" y="304">Keep strangers' text away from the bot</text>
+    <rect x="360" y="286" width="94" height="26" rx="4" fill="#eab308"/><text x="462" y="305" font-weight="700">6</text>
+    <text x="24" y="340">Do both</text>
+    <rect x="360" y="322" width="8" height="26" rx="2" fill="#16a34a"/><text x="378" y="341" font-weight="700" fill="#15803d">0  (all blocked)</text>
+  </g>
+</svg>

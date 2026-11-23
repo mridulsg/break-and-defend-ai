@@ -1,0 +1,7 @@
+# Direct dependencies of the test image. requirements.txt is generated with hashes.
+pytest
+starlette
+uvicorn
+httpx
+openai
+pyyaml

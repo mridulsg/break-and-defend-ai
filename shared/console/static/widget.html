@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Acme website chat widget</title>
+<style>
+  body { margin: 0; font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: #ffffff; color: #17212b; }
+  header { background: #1b6b4a; color: #fff; padding: 10px 16px; font-weight: 600; display: flex; justify-content: space-between; }
+  header small { font-weight: 400; opacity: .85; }
+  main { padding: 14px 16px; min-height: 200px; }
+  .q { color: #5a6776; font-size: 13px; margin: 14px 0 4px; }
+  .a { background: #f1f4f2; border: 1px solid #dfe4ea; border-radius: 10px; padding: 10px 12px; overflow-wrap: anywhere; }
+  .empty { color: #8693a1; padding: 24px 0; }
+  .ran { margin-top: 10px; padding: 8px 12px; background: #fde6e3; border: 1px solid #b42318; color: #b42318; border-radius: 8px; font-weight: 600; font-size: 13px; }
+  footer { border-top: 1px solid #dfe4ea; padding: 8px 16px; font-size: 12px; color: #5a6776; }
+</style>
+</head>
+<body>
+<header>Acme Outdoor Gear <small>Customer chat</small></header>
+<main id="log"><div class="empty">Replies from TrailBot appear here, as a visitor to Acme's website would see them.</div></main>
+<footer>Logged in as sess-DEMO-4f9a: this page holds the visitor's session.</footer>
+<script>
+/* This is the old website's chat widget. It was written before anyone put a language model behind it, and it does
+   what many such pages do: it builds the page from the reply with innerHTML. Anything in the reply that looks like
+   HTML becomes part of the page, and any script in it runs. That is the bug this lab is about. This page is served on
+   its own port, which is a different origin from the console, and its policy gives it no network: whatever runs here
+   cannot touch the console or send anything out. The effect stays inside this box. */
+const PARENT = location.protocol + "//" + location.hostname + ":8300";
+window.alert = function (msg) {
+  const note = document.createElement("div");
+  note.className = "ran";
+  note.textContent = "A script in TrailBot's reply just ran on this page. It could read the visitor's session sess-DEMO-4f9a. (alert: " + String(msg) + ")";
+  document.getElementById("log").append(note);
+};
+window.addEventListener("message", (ev) => {
+  if (ev.origin !== PARENT) return; // only the console may send replies
+  const data = ev.data;
+  if (!data || data.type !== "replies" || !Array.isArray(data.replies)) return;
+  const log = document.getElementById("log");
+  log.replaceChildren();
+  if (!data.replies.length) { log.innerHTML = '<div class="empty">Replies from TrailBot appear here, as a visitor to Acme\'s website would see them.</div>'; return; }
+  for (const r of data.replies) {
+    const q = document.createElement("div");
+    q.className = "q";
+    q.textContent = "Visitor asked: " + String(r.q);
+    const a = document.createElement("div");
+    a.className = "a";
+    a.innerHTML = String(r.a); // the bug: the reply is trusted as HTML
+    log.append(q, a);
+  }
+});
+</script>
+</body>
+</html>

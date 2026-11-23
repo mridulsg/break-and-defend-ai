@@ -1,0 +1,117 @@
+site_name: Break & Defend AI
+site_description: Free, hands-on courses on attacking and defending AI systems, MCP servers and agents.
+docs_dir: docs
+
+theme:
+  name: material
+  font: false            # no third-party font requests: the site works offline
+  features:
+    - navigation.top
+    - content.code.copy
+  palette:
+    - scheme: default
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - scheme: slate
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+
+extra_css:
+  - assets/sidebar-toggle.css
+extra_javascript:
+  - assets/sidebar-toggle.js
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+
+nav:
+  - Home: index.md
+  - Safety and authorized use: safety.md
+  - "Course 1: AI/LLM Security":
+      - "0. Orientation and lab setup": c1/ch00-orientation.md
+      - "1. How AI apps work and where they are exposed": c1/ch01-ai-attack-surface.md
+      - "Lab 1.1: Explore TrailBot and map its trust boundaries": c1/lab-1-1-trailbot.md
+      - "2. Real AI attacks and how they are catalogued": c1/ch02-threat-landscape.md
+      - "3. Prompt injection and jailbreaks": c1/ch03-prompt-injection.md
+      - "Lab 3.1: Prompt injection attacks": c1/lab-3-1-break-trailbot.md
+      - "Lab 3.2: Prompt injection fixes": c1/lab-3-2-defend-trailbot.md
+      - "4. Excessive agency, data disclosure and unsafe output": c1/ch04-output-and-agency.md
+      - "Lab 4.1: Agency, data disclosure and output attacks": c1/lab-4-1-order-desk.md
+      - "Lab 4.2: Agency, data disclosure and output fixes": c1/lab-4-2-fixes.md
+      - "5. Data and model poisoning, vector weaknesses and training data leaks": c1/ch05-data-and-model-poisoning.md
+      - "Lab 5.1: Poisoning, backdoors and training data leaks": c1/lab-5-1-poisoning-and-leaks.md
+      - "Lab 5.2: Fixes for poisoning, backdoors and training data leaks": c1/lab-5-2-fixes.md
+      - "6. Multimodal attacks: hidden text in images": c1/ch06-multimodal-attacks.md
+      - "Lab 6.1: Hidden text in images": c1/lab-6-1-images-that-fool-machines.md
+      - "Lab 6.2: Fixes for hidden text in images": c1/lab-6-2-fixes.md
+      - "7. Unbounded consumption, misinformation and over-reliance": c1/ch07-unbounded-consumption-and-misinformation.md
+      - "Lab 7.1: Cost and trust attacks": c1/lab-7-1-cost-and-trust.md
+      - "Lab 7.2: Fixes for cost and trust": c1/lab-7-2-fixes.md
+      - "8. Red teaming and guardrails: testing an AI and what filters stop": c1/ch08-red-teaming-and-guardrails.md
+      - "Lab 8.1: Measure the attacks and break the guardrails": c1/lab-8-1-red-team-and-guardrails.md
+      - "Lab 8.2: What guardrails can and cannot do": c1/lab-8-2-what-guardrails-can-do.md
+      - "Lab 8.3: Run garak, a real red-team scanner": c1/lab-8-3-run-garak.md
+      - "Lab 8.4: The other red-team tools, and how to choose": c1/lab-8-4-the-other-red-team-tools.md
+      - "9. AI supply chain: malicious model files, look-alike packages and dependency risks": c1/ch09-ai-supply-chain.md
+      - "Lab 9.1: Model files and packages": c1/lab-9-1-model-files-and-packages.md
+      - "Lab 9.2: Fixes for model files and packages": c1/lab-9-2-fixes.md
+      - "Lab 9.3: Scan model files with real tools": c1/lab-9-3-scan-with-real-tools.md
+      - "10. Threat modeling and governance: STRIDE, risk registers, NIST, ISO 42001 and the EU AI Act": c1/ch10-threat-modeling-and-governance.md
+      - "11. Capstone: assess an AI app, report, fix and retest": c1/ch11-capstone-assessment.md
+      - "Lab 11.1: Assess, report, fix and retest": c1/lab-11-1-assess-fix-and-retest.md
+  - "Course 2: MCP Security":
+      - "1. MCP architecture and attack surface: hosts, clients, servers and tools": c2/ch01-mcp-architecture-and-attack-surface.md
+      - "Lab 1.1: Explore MCP and map its trust boundaries": c2/lab-1-1-explore-mcp.md
+      - "2. Tool poisoning, rug pulls and tool shadowing: when the description is the attack": c2/ch02-tool-poisoning-rug-pulls-and-shadowing.md
+      - "Lab 2.1: Poison a server, shadow a tool and pull the rug": c2/lab-2-1-poison-a-server.md
+      - "Lab 2.2: Defences against tool poisoning, shadowing and rug pulls": c2/lab-2-2-defences.md
+      - "3. Attacking MCP servers: path traversal, command injection and SSRF in tools": c2/ch03-attacking-mcp-servers.md
+      - "Lab 3.1: Attack the three tools": c2/lab-3-1-attack-the-tools.md
+      - "Lab 3.2: Fixes for the three tools": c2/lab-3-2-fixes.md
+      - "4. MCP authentication and authorization: tokens, audience, scopes and who may do what": c2/ch04-mcp-authentication-and-authorization.md
+      - "Lab 4.1: Break the token checks": c2/lab-4-1-break-the-token-checks.md
+      - "Lab 4.2: Fixes for the token checks": c2/lab-4-2-fixes.md
+      - "5. Threat modeling an MCP deployment: trust zones, data flows and a risk register": c2/ch05-threat-modeling-mcp.md
+      - "6. Defending MCP with a gateway: allowlists, pinning, approval, egress and limits": c2/ch06-defending-mcp-with-a-gateway.md
+      - "Lab 6.1: Build the defence": c2/lab-6-1-build-the-defence.md
+      - "Lab 6.2: What each control cannot do": c2/lab-6-2-limits-of-each-control.md
+      - "7. DevSecOps for MCP servers: scanning, pinning and a gate before release": c2/ch07-devsecops-for-mcp-servers.md
+      - "Lab 7.1: Run the pipeline": c2/lab-7-1-run-the-pipeline.md
+      - "Lab 7.2: The gate, and what a scanner misses": c2/lab-7-2-gate-and-limits.md
+      - "8. MCP supply chain and governance: shadow servers, trust and who owns what": c2/ch08-mcp-supply-chain-and-governance.md
+      - "Lab 8.1: Find the shadow servers": c2/lab-8-1-find-the-shadow-servers.md
+      - "Lab 8.2: Make it a standing process": c2/lab-8-2-a-standing-process.md
+      - "9. Capstone: assess an MCP deployment, report, fix and retest": c2/ch09-capstone-assess-an-mcp-deployment.md
+      - "Lab 9.1: Assess an MCP deployment": c2/lab-9-1-assess-an-mcp-deployment.md
+  - "Course 3: Agentic AI Security":
+      - "1. Agentic AI architecture and attack surface: goals, loops, memory and permissions": c3/ch01-agentic-ai-architecture-and-attack-surface.md
+      - "Lab 1.1: Watch an agent": c3/lab-1-1-watch-an-agent.md
+      - "2. Goal hijacking and agent injection: when what the agent reads gives the orders": c3/ch02-goal-hijacking-and-agent-injection.md
+      - "Lab 2.1: Hijack the agent": c3/lab-2-1-hijack-the-agent.md
+      - "Lab 2.2: What each control does, and what it cannot": c3/lab-2-2-what-each-control-does.md
+      - "3. Memory poisoning and persistence: when one bad note steers every later run": c3/ch03-memory-poisoning-and-persistence.md
+      - "Lab 3.1: Poison the memory": c3/lab-3-1-poison-the-memory.md
+      - "Lab 3.2: What each memory control does, and what it cannot": c3/lab-3-2-what-each-control-does.md
+      - "4. Tool misuse, permissions and autonomy: small powers, small damage": c3/ch04-tool-misuse-permissions-and-autonomy.md
+      - "Lab 4.1: Limit the power": c3/lab-4-1-limit-the-power.md
+      - "Lab 4.2: What each power control does, and what it cannot": c3/lab-4-2-what-each-control-does.md
+      - "5. Multi-agent systems and agent-to-agent trust: trust is not transitive": c3/ch05-multi-agent-systems-and-agent-to-agent-trust.md
+      - "Lab 5.1: Break the trust between agents": c3/lab-5-1-break-the-trust.md
+      - "Lab 5.2: What each agent-trust control does, and what it cannot": c3/lab-5-2-what-each-control-does.md
+      - "6. Capstone: assess an agent platform, report, fix and retest": c3/ch06-capstone-assess-an-agent-platform.md
+      - "Lab 6.1: Assess an agent platform": c3/lab-6-1-assess-an-agent-platform.md
+  - For contributors:
+      - Feedback log: _dev/feedback.md

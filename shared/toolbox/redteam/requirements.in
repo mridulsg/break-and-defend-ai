@@ -1,0 +1,5 @@
+# Direct dependency of the red-team toolbox (Lab 8.3). requirements.txt is generated with hashes:
+#   see the command in Lab 8.3 and docs/c1/lab-8-3-run-garak.md
+--extra-index-url https://download.pytorch.org/whl/cpu
+garak==0.17.1
+torch==2.15.0+cpu

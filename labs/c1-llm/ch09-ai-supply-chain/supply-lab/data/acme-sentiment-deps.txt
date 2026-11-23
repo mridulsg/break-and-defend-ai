@@ -1,0 +1,11 @@
+# Dependencies of Acme's sentiment service
+requests==2.31.0 --hash=sha256:0000000000000000000000000000000000000000000000000000000000000001
+pydantic==2.5.0 --hash=sha256:0000000000000000000000000000000000000000000000000000000000000002
+numpy
+flask>=2.0
+reqeusts==2.31.0
+python-dateutils==2.8.2
+torch
+fast-tokenizer-pro==0.4.1
+git+https://github.com/unknown-user/tokenizer-fork.git
+--extra-index-url https://packages.acme-internal.example/simple

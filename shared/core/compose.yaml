@@ -1,0 +1,92 @@
+# bdai-core: the shared model gateway. Survives course purges (see shared/scripts/down.sh).
+# Run from the repository root:
+#   docker compose --env-file .env -f shared/core/compose.yaml up -d --build
+name: bdai-core
+
+services:
+  gateway:
+    container_name: bdai-gateway
+    build:
+      context: ./gateway
+      labels:
+        bdai.component: core
+    image: bdai/gateway:local
+    environment:
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:?OPENROUTER_API_KEY is not set in .env}
+      BDAI_GATEWAY_KEY: ${BDAI_GATEWAY_KEY:?Run shared/scripts/setup.sh first}
+      BDAI_MAX_BUDGET_USD: ${BDAI_MAX_BUDGET_USD:-5}
+      BDAI_MAX_TOKENS: ${BDAI_MAX_TOKENS:-4096}
+      # The local "victim" model and the embedding model run in the ollama container below.
+      # To use an Ollama you installed on the host instead, see shared/scripts/dev-gateway-up.sh.
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://bdai-ollama:11434/v1}
+    extra_hosts:
+      # Only used when OLLAMA_BASE_URL points at the host (dev-gateway-up.sh). WSL's address for Windows changes per boot.
+      - "host.docker.internal:${BDAI_WINDOWS_HOST_IP:-host-gateway}"
+    depends_on:
+      ollama:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:4000:4000"
+    networks:
+      - bdai-llm      # internal: lab containers reach the gateway here and nowhere else
+      - bdai-egress   # only the gateway can reach the internet
+    volumes:
+      - bdai-core-data:/data
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 256m
+    cpus: 0.5
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request as u; u.urlopen('http://127.0.0.1:4000/healthz', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    labels:
+      bdai.component: core
+
+  ollama:
+    # The local models (a small chat model and an embedding model) run here, on the CPU. Lab containers cannot reach it:
+    # only the gateway can (both are on bdai-egress). It needs the internet once, to download the models (shared/scripts/pull-models.sh).
+    container_name: bdai-ollama
+    image: ollama/ollama@sha256:ccc42bcd3d5fcf7ab0d532b300382154e1a4da56fc666bdb313b78ebdd912754   # ollama/ollama 0.40.x, multi-architecture
+    environment:
+      OLLAMA_KEEP_ALIVE: 30m          # keep the model loaded between questions
+      OLLAMA_MAX_LOADED_MODELS: "2"   # the chat model and the embedding model together
+    networks:
+      - bdai-egress
+    volumes:
+      - bdai-ollama-models:/root/.ollama
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 4g
+    cpus: 2
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 10s
+      timeout: 8s
+      retries: 12
+    labels:
+      bdai.component: core
+
+networks:
+  bdai-llm:
+    name: bdai-llm
+    internal: true
+  bdai-egress:
+    name: bdai-egress
+
+volumes:
+  bdai-core-data:
+    name: bdai-core-data
+  bdai-ollama-models:
+    name: bdai-ollama-models

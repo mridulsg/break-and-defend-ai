@@ -1,0 +1,4 @@
+FROM python:latest
+COPY . /app
+USER root
+CMD ["python", "/app/server.py"]

@@ -1,0 +1,16 @@
+{
+  "approved": [
+    {
+      "name": "acme-notes",
+      "owner": "Platform team",
+      "source": "uvx acme-notes",
+      "version": "1.4.2"
+    },
+    {
+      "name": "acme-tickets",
+      "owner": "Support engineering",
+      "source": "https://mcp.acme.example/tickets",
+      "version": null
+    }
+  ]
+}
